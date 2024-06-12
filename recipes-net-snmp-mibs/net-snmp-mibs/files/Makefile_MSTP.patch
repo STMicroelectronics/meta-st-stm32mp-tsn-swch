@@ -1,0 +1,31 @@
+From 131c55c338fd411c4607c834ffea14d0d15e5723 Mon Sep 17 00:00:00 2001
+From: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
+Date: Mon, 19 Feb 2024 18:09:09 +0100
+Subject: [PATCH] Makefile_MSTP
+
+---
+ tsn_sw_base.net-snmp-mibs/ieee8021MstpMib-module/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 939aa30..8733c63 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,11 +1,11 @@
+-CC=gcc
++#CC=gcc
+ 
+-CFLAGS=-I. `net-snmp-config --cflags` -I/usr/include/base
++#CFLAGS=-I. `net-snmp-config --cflags` -I/usr/include/base
+ BUILDLIBS= -lbase
+ #BUILDAGENTLIBS=`net-snmp-config --agent-libs`
+ 
+ # shared library flags (assumes gcc)
+-DLFLAGS=-fPIC -shared
++#DLFLAGS=-fPIC -shared
+ 
+ ieee8021MstpMib.so: ieee8021MstpMib.c \
+ 					ieee8021MstpCistTable/ieee8021MstpCistTable.c \
+-- 
+2.34.1
+

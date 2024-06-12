@@ -1,0 +1,30 @@
+From 0f957a7495029a9d0cca2b489e17a3ccb39d8ad9 Mon Sep 17 00:00:00 2001
+From: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
+Date: Mon, 19 Feb 2024 18:11:20 +0100
+Subject: [PATCH] Makefile_Bridge
+
+---
+ .../ieee8021BridgeMib-mib-module/Makefile                   | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 248bcb6..20e76a7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,11 +1,11 @@
+-CC=gcc
++#CC=gcc
+ 
+-CFLAGS=-I. `net-snmp-config --cflags` -I/usr/include/base -L/usr/local/lib/libtsn/build -I/usr/include/tsn
++#CFLAGS=-I. `net-snmp-config --cflags` -I/usr/include/base -L/usr/local/lib/libtsn/build -I/usr/include/tsn
+ BUILDLIBS= -lbase -ltsn
+ #BUILDAGENTLIBS=`net-snmp-config --agent-libs`
+ 
+ # shared library flags (assumes gcc)
+-DLFLAGS=-fPIC -shared
++#DLFLAGS=-fPIC -shared
+ 
+ ieee8021BridgeMib.so: ieee8021BridgeMib.c \
+ 					ieee8021BridgeBaseTable/ieee8021BridgeBaseTable.c \
+-- 
+2.34.1
