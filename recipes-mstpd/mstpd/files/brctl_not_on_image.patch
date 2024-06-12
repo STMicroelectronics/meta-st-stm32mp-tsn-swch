@@ -1,0 +1,121 @@
+diff --git a/bridge-stp.in b/bridge-stp.in
+index ad2b52f..b58f1d2 100755
+--- a/bridge-stp.in
++++ b/bridge-stp.in
+@@ -156,7 +156,7 @@ case "$action" in
+             # then dying before or when mstpctl connects to it.  To avoid that
+             # possibility, we instead simply turn STP off if `mstpctl addbridge`
+             # fails.
+-            ( sleep 1 ; "$mstpctl" addbridge "$bridge" || brctl stp "$bridge" off ) &
++            ( sleep 1 ; "$mstpctl" addbridge "$bridge" || ip link set dev "$bridge" stp_state 0 ) &
+             exit 0
+         fi
+ 
+@@ -226,7 +226,7 @@ case "$action" in
+                 echo
+                 echo "Skipping bridge '$bridge' that has STP disabled."
+                 echo "To configure this bridge to use MSTP, run:"
+-                echo "brctl stp '$bridge' on"
++                echo "ip link set dev '$bridge' stp_state 1"
+                 continue
+             fi
+ 
+@@ -235,7 +235,7 @@ case "$action" in
+                 echo
+                 echo "Skipping bridge '$bridge' that is not in user_stp mode."
+                 echo "To reconfigure this bridge to use MSTP, run:"
+-                echo "brctl stp '$bridge' off ; brctl stp '$bridge' on"
++                echo "ip link set dev '$bridge' stp_state 0 ; ip link set dev '$bridge' stp_state 1"
+                 continue
+             fi
+ 
+diff --git a/utils/ifupdown.sh.in b/utils/ifupdown.sh.in
+index d7efbeb..f814f9e 100755
+--- a/utils/ifupdown.sh.in
++++ b/utils/ifupdown.sh.in
+@@ -25,11 +25,11 @@ mstpctl='@mstpctlfile@'
+ if [ ! -x "$mstpctl" ]; then
+   exit 0
+ fi
+-brctl="$(command -v brctl)"
+-if [ -z "$brctl" ] || [ ! -x "$brctl" ]; then
+-  echo "'brctl' binary does not exist or is not executable" >&2
+-  exit 2
+-fi
++#brctl="$(command -v brctl)"
++#if [ -z "$brctl" ] || [ ! -x "$brctl" ]; then
++#  echo "'brctl' binary does not exist or is not executable" >&2
++#  exit 2
++#fi
+ ip="$(command -v ip)"
+ if [ -z "$ip" ] || [ ! -x "$ip" ]; then
+   echo "'ip' binary does not exist or is not executable" >&2
+@@ -53,7 +53,7 @@ esac
+ 
+ # Previous work (create the interface)
+ if [ "$MODE" = 'start' ] && [ ! -d "/sys/class/net/$IFACE" ]; then
+-  "$brctl" addbr "$IFACE" || exit 2
++  "$ip" link add dev "$IFACE" type bridge || exit 2
+ # Previous work (stop the interface)
+ elif [ "$MODE" = 'stop' ]; then
+   "$ip" link set dev "$IFACE" down || exit 2
+@@ -76,10 +76,10 @@ mstpctl_parse_ports $INTERFACES | while read -r i; do
+       if [ -f "/proc/sys/net/ipv6/conf/$port/disable_ipv6" ]; then
+         echo 1 > "/proc/sys/net/ipv6/conf/$port/disable_ipv6"
+       fi
+-      "$brctl" addif "$IFACE" "$port" && "$ip" link set dev "$port" up
++      "$ip" link set dev "$port" master "$IFACE" && "$ip" link set dev "$port" up
+     # We detach each port of the bridge
+     elif [ "$MODE" = 'stop' ] && [ -d "/sys/class/net/$IFACE/brif/$port" ]; then
+-      "$ip" link set dev "$port" down && "$brctl" delif "$IFACE" "$port" && \
++      "$ip" link set dev "$port" down && "$ip" link set dev "$port" nomaster && \
+         if [ -x /etc/network/if-post-down.d/vlan ]; then
+           IFACE="$port" /etc/network/if-post-down.d/vlan
+         fi
+@@ -94,7 +94,7 @@ done
+ if [ "$MODE" = 'start' ]; then
+ 
+   # This triggers the kernel to run `/sbin/bridge-stp start $IFACE`
+-  "$brctl" stp "$IFACE" on
++  "$ip" link set dev "$IFACE" stp_state 1
+ 
+   # `mstpctl addbridge $IFACE` must be called before this script continues.
+   # If mstpd is already running then /sbin/bridge-stp will call
+@@ -296,7 +296,7 @@ if [ "$MODE" = 'start' ]; then
+       # 'disabled', except if all ports are 'disabled' and we have yet to see
+       # any port transition to any other valid state.
+       converged=true
+-      for i in $("$brctl" showstp "$IFACE" | sed -n 's/^.*port id.*state[ \t]*\(.*\)$/\1/p'); do
++	for i in $("$ip" -d -o link show master "$IFACE" | sed -n 's/^.*state[ \t]*\(.*\)$/\1/p' | cut -f 1 -d ' '); do
+         if [ "$i" = 'listening' ] || [ "$i" = 'learning' ]; then
+           transitioned=true
+           converged=''
+@@ -316,6 +316,6 @@ if [ "$MODE" = 'start' ]; then
+ # Finally we destroy the interface
+ elif [ "$MODE" = 'stop' ]; then
+ 
+-  "$brctl" delbr "$IFACE"
++  "$ip" link delete dev "$IFACE"
+ 
+ fi
+diff --git a/utils/mstp_config_bridge.in b/utils/mstp_config_bridge.in
+index 37b2d5d..4172ee1 100755
+--- a/utils/mstp_config_bridge.in
++++ b/utils/mstp_config_bridge.in
+@@ -39,11 +39,11 @@ if [ ! -x "$mstpctl" ]; then
+   echo "'mstpctl' binary does not exist or is not executable" >&2
+   exit 2
+ fi
+-brctl="$(command -v brctl)"
+-if [ -z "$brctl" ] || [ ! -x "$brctl" ]; then
+-  echo "'brctl' binary does not exist or is not executable" >&2
+-  exit 2
+-fi
++#brctl="$(command -v brctl)"
++#if [ -z "$brctl" ] || [ ! -x "$brctl" ]; then
++#  echo "'brctl' binary does not exist or is not executable" >&2
++#  exit 2
++#fi
+ ip="$(command -v ip)"
+ if [ -z "$ip" ] || [ ! -x "$ip" ]; then
+   echo "'ip' binary does not exist or is not executable" >&2

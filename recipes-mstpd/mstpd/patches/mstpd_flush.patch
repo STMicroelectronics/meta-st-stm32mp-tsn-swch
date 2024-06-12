@@ -1,0 +1,39 @@
+diff --git a/bridge_track.c b/bridge_track.c
+index 70512ce..0116a41 100644
+--- a/bridge_track.c
++++ b/bridge_track.c
+@@ -429,18 +429,6 @@ static int br_set_state(struct rtnl_handle *rth, unsigned ifindex, __u8 state)
+     return rtnl_talk(rth, &req.n, 0, 0, NULL, NULL, NULL);
+ }
+ 
+-static int br_flush_port(char *ifname)
+-{
+-    char fname[128];
+-    snprintf(fname, sizeof(fname), SYSFS_CLASS_NET "/%s/brport/flush", ifname);
+-    int fd = open(fname, O_WRONLY);
+-    TSTM(0 <= fd, -1, "Couldn't open flush file %s for write: %m", fname);
+-    int write_result = write(fd, "1", 1);
+-    close(fd);
+-    TST(1 == write_result, -1);
+-    return 0;
+-}
+-
+ static int br_set_ageing_time(char *brname, unsigned int ageing_time)
+ {
+     char fname[128], str_time[32];
+@@ -510,13 +498,9 @@ void MSTP_OUT_flush_all_fids(per_tree_port_t * ptp)
+     port_t *prt = ptp->port;
+     bridge_t *br = prt->bridge;
+ 
++    /* !!! Do not use kernel bridge code as it does not propagate to HW bridge */
+     /* Translate CIST flushing to the kernel bridge code */
+-    if(0 == ptp->MSTID)
+-    { /* CIST */
+-        if(0 > br_flush_port(prt->sysdeps.name))
+-            ERROR_PRTNAME(br, prt,
+-                          "Couldn't flush kernel bridge forwarding database");
+-    }
++
+     /* Completion signal MSTP_IN_all_fids_flushed will be called by driver */
+     INFO_MSTINAME(br, prt, ptp, "Flushing forwarding database");
+     driver_flush_all_fids(ptp);

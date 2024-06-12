@@ -1,0 +1,41 @@
+diff --git a/mstp.c b/mstp.c
+index 1ebdfa7..828bda5 100644
+--- a/mstp.c
++++ b/mstp.c
+@@ -762,10 +762,10 @@ int MSTP_IN_set_cist_bridge_config(bridge_t *br, CIST_BridgeConfig *cfg)
+     if(cfg->set_bridge_max_age)
+     {
+         new_max_age = cfg->bridge_max_age;
+-        if((6 > new_max_age) || (40 < new_max_age))
++        if((6 > new_max_age) || (255 < new_max_age))
+         {
+             ERROR_BRNAME(br,
+-                "Bridge Max Age must be between 6 and 40 seconds");
++                "Bridge Max Age must be between 6 and 255 seconds");
+             r = -1;
+         }
+     }
+@@ -775,10 +775,10 @@ int MSTP_IN_set_cist_bridge_config(bridge_t *br, CIST_BridgeConfig *cfg)
+     if(cfg->set_bridge_forward_delay)
+     {
+         new_forward_delay = cfg->bridge_forward_delay;
+-        if((4 > new_forward_delay) || (30 < new_forward_delay))
++        if((4 > new_forward_delay) || (255 < new_forward_delay))
+         {
+             ERROR_BRNAME(br,
+-                "Bridge Forward Delay must be between 4 and 30 seconds");
++                "Bridge Forward Delay must be between 4 and 255 seconds");
+             r = -1;
+         }
+     }
+@@ -790,8 +790,8 @@ int MSTP_IN_set_cist_bridge_config(bridge_t *br, CIST_BridgeConfig *cfg)
+         if((2 * (new_forward_delay - 1)) < new_max_age)
+         {
+             ERROR_BRNAME(br, "Configured Bridge Times don't meet "
+-                "2 * (Bridge Foward Delay - 1 second) >= Bridge Max Age");
+-            r = -1;
++                "2 * (Bridge Foward Delay - 1 second) >= Bridge Max Age\nBut will be allowed anyways");
++            //r = -1;
+         }
+     }
+ 
