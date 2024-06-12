@@ -1,0 +1,71 @@
+From 591d2d8479a87dc1ef64a72cbec2b5df846600d7 Mon Sep 17 00:00:00 2001
+From: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
+Date: Thu, 23 Jun 2022 10:49:27 +0200
+Subject: [PATCH] Patch-to-support-arm64-bits-compilation
+
+Signed-off-by: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
+---
+ .../source/bridge_port_delays.c | 4 ++--
+ .../source/frer_statistics.c    | 6 +++---
+ .../source/sched.c              | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/source/bridge_port_delays.c b/source/bridge_port_delays.c
+index 603dce4..8fc3fd8 100644
+--- a/source/bridge_port_delays.c
++++ b/source/bridge_port_delays.c
+@@ -41,14 +41,14 @@ int new_bridge_port_delays(struct lyd_node **parent, char *interface_name,
+     if (0 == tsn_bridge_get_port_delays(port, port_speed, &delay_entry)) {
+         /* list bridge-port-delays, leaf dependentRxDelayMin */
+         fill_xpath(path, BRIDGE_PORT_DEP_RX_DELAY_MIN_XPATH, interface_name, port_speed);
+-        snprintf(value, 21, "%llu", delay_entry.dep_rx_delay_min_ps); // picoseconds
++        snprintf(value, 21, "%lu", delay_entry.dep_rx_delay_min_ps); // picoseconds
+         if (NULL == lyd_new_path(*parent, NULL, path, value, 0, 0)) {
+             SRP_LOG_INF(ERROR_MSG_FUN_NODE_EL_AND_MSG_STR, __func__,
+                         path, ERR_NOT_CREATED_ELEMENT_STR);
+         }
+         /* list bridge-port-delays, leaf dependentRxDelayMax */
+         fill_xpath(path, BRIDGE_PORT_DEP_RX_DELAY_MAX_XPATH, interface_name, port_speed);
+-        snprintf(value, 21, "%llu", delay_entry.dep_rx_delay_max_ps); // picoseconds
++        snprintf(value, 21, "%lu", delay_entry.dep_rx_delay_max_ps); // picoseconds
+         if (NULL == lyd_new_path(*parent, NULL, path, value, 0, 0)) {
+             SRP_LOG_INF(ERROR_MSG_FUN_NODE_EL_AND_MSG_STR, __func__,
+                         path, ERR_NOT_CREATED_ELEMENT_STR);
+diff --git a/source/frer_statistics.c b/source/frer_statistics.c
+index 6c2d113..4fe8f33 100644
+--- a/source/frer_statistics.c
++++ b/source/frer_statistics.c
+@@ -176,7 +176,7 @@ int frame_replication_and_elimination_per_port_per_stream_counters(
+ 
+     /* container per-port-counters, leaf "rx-passed-pkts" */
+     fill_xpath(path, FRER_PER_PORT_XPATH, interface_name, FRER_REC_PASSED_PCKTS_STR);
+-    snprintf(value, MAX_STR_LEN, "%llu", port_passed_cnt);
++    snprintf(value, MAX_STR_LEN, "%lu", port_passed_cnt);
+     if (NULL == lyd_new_path(*parent, NULL, path, value, 0, 0)) {
+         SRP_LOG_INF(ERROR_MSG_FUN_NODE_EL_AND_MSG_STR, __func__,
+                     FRER_REC_PASSED_PCKTS_STR, ERR_NOT_CREATED_ELEMENT_STR);
+@@ -184,7 +184,7 @@ int frame_replication_and_elimination_per_port_per_stream_counters(
+ 
+     /* container per-port-counters, leaf "rx-discarded-pkts" */
+     fill_xpath(path, FRER_PER_PORT_XPATH, interface_name, FRER_REC_DISCARDED_PCKTS_STR);
+-    snprintf(value, MAX_STR_LEN, "%llu", port_discarded_cnt);
++    snprintf(value, MAX_STR_LEN, "%lu", port_discarded_cnt);
+     if (NULL == lyd_new_path(*parent, NULL, path, value, 0, 0)) {
+         SRP_LOG_INF(ERROR_MSG_FUN_NODE_EL_AND_MSG_STR, __func__,
+                     FRER_REC_DISCARDED_PCKTS_STR, ERR_NOT_CREATED_ELEMENT_STR);
+diff --git a/source/sched.c b/source/sched.c
+index ed2e4ec..3899bfa 100644
+--- a/source/sched.c
++++ b/source/sched.c
+@@ -414,7 +414,7 @@ int new_max_sdu_state_entry(struct lyd_node **parent, char *interface_name,
+         /* traffic-class, key leaf */
+         snprintf(tmp, MAX_STR_LEN, "%d", traffic_class);
+         fill_xpath(path, SCHED_MAX_SDU_TRANSMISSION_OVERRUN_XPATH, interface_name, tmp);
+-        snprintf(tmp, MAX_STR_LEN, "%llu", tmp_uint64);
++        snprintf(tmp, MAX_STR_LEN, "%lu", tmp_uint64);
+         if (NULL == lyd_new_path(*parent, NULL, path, tmp, 0, 0)) {
+             SRP_LOG_INF(ERROR_MSG_FUN_NODE_EL_AND_MSG_STR, __func__,
+                         SCHED_TRANSMISSION_OVERRUN_STR, ERR_NOT_CREATED_ELEMENT_STR);
+-- 
+2.25.1
+

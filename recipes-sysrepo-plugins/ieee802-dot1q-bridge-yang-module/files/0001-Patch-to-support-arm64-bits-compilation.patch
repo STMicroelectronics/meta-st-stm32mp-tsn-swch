@@ -1,0 +1,26 @@
+From fdae3d4c9509a2181353f2dadefcc3f41758c3ae Mon Sep 17 00:00:00 2001
+From: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
+Date: Wed, 7 Jun 2023 11:03:30 +0200
+Subject: [PATCH] Patch to support arm64 bits compilation
+
+Signed-off-by: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
+---
+ .../source/stream_filter_gates.c                              | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/source/stream_filter_gates.c b/source/stream_filter_gates.c
+index 5f4d9ae..85d1405 100644
+--- a/source/stream_filter_gates.c
++++ b/source/stream_filter_gates.c
+@@ -2626,7 +2626,7 @@ int get_sfsg_state_data(struct lyd_node **parent, char *bridge_name)
+             /* leaf config-change-error */
+             if (0 == tsn_psfp_gt_get_config_change_error(port, sfg_id, &tmp_ui64)) {
+                 fill_xpath(path, PSFP_CONFIG_CHANGE_ERROR_XPATH, bridge_name, bridge_name, gate_id);
+-                snprintf(tmp_value, MAX_STR_LEN, "%llu", tmp_ui64);
++                snprintf(tmp_value, MAX_STR_LEN, "%lu", tmp_ui64);
+                 if (NULL == lyd_new_path(*parent, NULL, path, tmp_value, 0, 0)) {
+                     SRP_LOG_INF(ERROR_MSG_FUN_NODE_EL_AND_MSG_STR, __func__,
+                                 path, ERR_NOT_CREATED_ELEMENT_STR);
+-- 
+2.25.1
+
