@@ -1,0 +1,57 @@
+diff --git a/src/common.h.in b/src/common.h.in
+index bd74be21..270e0dca 100644
+--- a/src/common.h.in
++++ b/src/common.h.in
+@@ -128,40 +128,40 @@ int pthread_mutex_timedlock(pthread_mutex_t *mutex, const struct timespec *absti
+ #define SR_EV_NOTIF_FILE_MAX_SIZE 1024
+ 
+ /** maximum ext SHM wasted memory (B) */
+-#define SR_SHM_WASTED_MAX_MEM 4096
++#define SR_SHM_WASTED_MAX_MEM 4096*2
+ 
+ /** maximum time read lock can be held on rwlocks; used when unlocking (ms) */
+-#define SR_RWLOCK_READ_TIMEOUT 100
++#define SR_RWLOCK_READ_TIMEOUT 300
+ 
+ /** timeout for processing all events on all subscriptions of one subscriber thread; used when modifying subscriptions (s) */
+-#define SR_SUB_EVENT_LOOP_TIMEOUT 30
++#define SR_SUB_EVENT_LOOP_TIMEOUT 90
+ 
+ /** timeout for locking subscriptions lock, used when modifying subscriptions (ms) */
+-#define SR_SUB_SUBS_LOCK_TIMEOUT 100
++#define SR_SUB_SUBS_LOCK_TIMEOUT 300
+ 
+ /** timeout for locking notification buffer lock, used when adding/removing notifications (ms) */
+-#define SR_NOTIF_BUF_LOCK_TIMEOUT 100
++#define SR_NOTIF_BUF_LOCK_TIMEOUT 300
+ 
+ /** timeout for locking main SHM connection state (ms) */
+-#define SR_CONN_STATE_LOCK_TIMEOUT 100
++#define SR_CONN_STATE_LOCK_TIMEOUT 300
+ 
+ /** timeout for locking main SHM and subscription SHM; maximum time an API call (sr_apply_changes()) is expected to take (s) */
+-#define SR_MAIN_LOCK_TIMEOUT 15
++#define SR_MAIN_LOCK_TIMEOUT 60
+ 
+ /** timeout for locking (data of) a module; maximum time a module write lock is expected to be held (s) */
+-#define SR_MOD_LOCK_TIMEOUT 2
++#define SR_MOD_LOCK_TIMEOUT 30
+ 
+ /** timeout for locking module cache (s) */
+-#define SR_MOD_CACHE_LOCK_TIMEOUT 5
++#define SR_MOD_CACHE_LOCK_TIMEOUT 30
+ 
+ /** default timeout for change subscription callback (ms) */
+-#define SR_CHANGE_CB_TIMEOUT 5000
++#define SR_CHANGE_CB_TIMEOUT 60000
+ 
+ /** default timeout for operational subscription callback (ms) */
+-#define SR_OPER_CB_TIMEOUT 5000
++#define SR_OPER_CB_TIMEOUT 30000
+ 
+ /** default timeout for RPC/action subscription callback (ms) */
+-#define SR_RPC_CB_TIMEOUT 2000
++#define SR_RPC_CB_TIMEOUT 6000
+ 
+ /** permissions of main SHM lock file and main SHM itself */
+ #define SR_MAIN_SHM_PERM 00666
