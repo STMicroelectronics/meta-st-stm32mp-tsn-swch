@@ -25,13 +25,4 @@
     <domain>0</domain>
     <time_source>internal oscillator</time_source>
   </Clock>
-  <Clock>
-    <clock_class>187</clock_class>
-    <clock_accuracy>1us</clock_accuracy>
-    <clock_priority1>248</clock_priority1>
-    <clock_priority2>248</clock_priority2>
-    <domain>200</domain>
-    <time_source>internal oscillator</time_source>
-  </Clock>
-
 </PTP_config>
