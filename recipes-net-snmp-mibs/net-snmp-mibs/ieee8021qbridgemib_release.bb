@@ -9,7 +9,7 @@ SRC_URI = "\
     "
 SRCREV = "${TSN_SRCREV}"
 
-PR = "st-1.6.7"
+PV = "st-1.6.8"
 
 TTTECH_DIR = "tsn_sw_base.net-snmp-mibs/ieee8021QBridgeMib-mib-module"
 S = "${WORKDIR}/git/${TTTECH_DIR}"

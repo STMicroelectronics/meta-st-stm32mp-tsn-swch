@@ -10,7 +10,7 @@ S = "${WORKDIR}/git/${TTTECH_DIR}"
 
 SRC_URI += "file://LICENSE"
 
-PR = "st-1.6.7"
+PV = "st-1.6.8"
 
 EXTRA_OEMAKE = "-e "
 

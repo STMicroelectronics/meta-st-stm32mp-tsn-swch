@@ -12,7 +12,7 @@ SRCREV = "${TSN_SRCREV}"
 TTTECH_DIR = "tsn_sw_base.net-snmp-mibs/ieee8021MstpMib-module"
 S = "${WORKDIR}/git/${TTTECH_DIR}"
 
-PR = "st-1.6.7"
+PV = "st-1.6.8"
 
 SRC_URI += "file://Makefile_MSTP.patch"
 

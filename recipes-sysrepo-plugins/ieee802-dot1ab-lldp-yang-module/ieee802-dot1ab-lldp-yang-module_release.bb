@@ -8,15 +8,13 @@ SRCREV = "${TSN_SRCREV}"
 TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/ieee802-dot1ab-lldp-yang-module"
 S = "${WORKDIR}/git/${TTTECH_DIR}"
 
-PR = "st-1.6.7"
+PV = "st-1.6.8"
 
 DEPENDS = "libbase lldpd libyang libnetconf2 sysrepo coreutils openssh openssl openssh-native libbsd"
 
 FILES:${PN} += "${libdir}/sysrepo/* /etc/netopeer2/*"
 
 inherit cmake pkgconfig
-# Needed to update dynamic library name in elf file
-DEPENDS += "patchelf-native"
 
 # Specify any options you want to pass to cmake using EXTRA_OECMAKE:
 OECMAKE_C_FLAGS = "${HOST_CC_ARCH} ${TOOLCHAIN_OPTIONS} ${TARGET_CPPFLAGS} -Wno-error=format-truncation -Wno-error=cpp"
@@ -24,15 +22,19 @@ EXTRA_OECMAKE = " -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE:String=Release 
 
 do_install:append () {
     install -d ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1ab-lldp.yang ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/iana-if-type.yang ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1ab-types.yang ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1q-bridge.yang ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1q-types.yang ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/ieee802-types.yang ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/ietf-interfaces.yang ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/ietf-routing.yang ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/ietf-yang-types.yang ${D}/etc/netopeer2/yang
+    install -m 0644 ${S}/../YANG_modules_repository/ieee802-dot1ab-lldp.yang ${D}/etc/netopeer2/yang
+    # provided by ietf-interfaces-yang-module
+    # install -m 0644 ${S}/../YANG_modules_repository/iana-if-type.yang ${D}/etc/netopeer2/yang
+    install -m 0644 ${S}/../YANG_modules_repository/ieee802-dot1ab-types.yang ${D}/etc/netopeer2/yang
+    # provided by ieee802-dot1q-bridge-yang-module
+    # install -m 0644 ${S}/../YANG_modules_repository/ieee802-dot1q-bridge.yang ${D}/etc/netopeer2/yang
+    install -m 0644 ${S}/../YANG_modules_repository/ieee802-dot1q-types.yang ${D}/etc/netopeer2/yang
+    # install -m 0644 ${S}/../YANG_modules_repository/ieee802-types.yang ${D}/etc/netopeer2/yang
+    # provided by ietf-interfaces-yang-module
+    # install -m 0644 ${S}/../YANG_modules_repository/ietf-interfaces.yang ${D}/etc/netopeer2/yang
+    install -m 0644 ${S}/../YANG_modules_repository/ietf-routing.yang ${D}/etc/netopeer2/yang
+    # provided by ieee802-dot1q-fqtss-yang-module
+    #install -m 0644 ${S}/../YANG_modules_repository/ietf-yang-types.yang ${D}/etc/netopeer2/yang
 
     if [ "${libdir}" != "/usr/lib" ];
     then

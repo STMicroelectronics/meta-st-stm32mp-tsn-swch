@@ -8,15 +8,13 @@ SRCREV = "${TSN_SRCREV}"
 TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/ieee802-dot1cb-stream-identification-params-yang-module"
 S = "${WORKDIR}/git/${TTTECH_DIR}"
 
-PR = "st-1.6.7"
+PV = "st-1.6.8"
 
 DEPENDS = "libbase libtsn libyang libnetconf2 sysrepo coreutils openssh openssl openssh-native libbsd"
 
 FILES:${PN} += "/usr/lib/sysrepo/* /etc/netopeer2/*"
 
 inherit cmake pkgconfig
-# Needed to update dynamic library name in elf file
-DEPENDS += "patchelf-native"
 
 # Specify any options you want to pass to cmake using EXTRA_OECMAKE:
 OECMAKE_C_FLAGS = "${HOST_CC_ARCH} ${TOOLCHAIN_OPTIONS} ${TARGET_CPPFLAGS} -Wno-error=format-truncation -Wno-error=cpp"
@@ -24,7 +22,7 @@ EXTRA_OECMAKE = " -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE:String=Release 
 
 do_install:append () {
     install -d ${D}/etc/netopeer2/yang
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1cb-stream-identification-params.yang ${D}/etc/netopeer2/yang
+    install -m 0644 ${S}/../YANG_modules_repository/ieee802-dot1cb-stream-identification-params.yang ${D}/etc/netopeer2/yang
 
     if [ "${libdir}" != "/usr/lib" ];
     then
@@ -32,9 +30,5 @@ do_install:append () {
             mv ${D}/usr/lib ${D}/usr/lib64
         fi
     fi
-
-    #patch issue with libbase.so
-    patchelf --replace-needed libbase.so libbase.so.1 ${D}${libdir}/sysrepo/plugins/libieee802-dot1cb-stream-identification-params-yang-module.so
-    patchelf --replace-needed libtsn.so libtsn.so.2 ${D}${libdir}/sysrepo/plugins/libieee802-dot1cb-stream-identification-params-yang-module.so
 }
 INSANE_SKIP:${PN} = "file-rdeps"

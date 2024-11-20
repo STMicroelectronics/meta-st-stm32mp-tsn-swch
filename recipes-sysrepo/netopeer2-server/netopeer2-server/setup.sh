@@ -86,10 +86,12 @@ echo "ieee802-dot1q-sched"
 # ieee802-dot1q-sched module
 $SYSREPOCTL -i $MODDIR/ieee802-dot1q-preemption.yang -s $MODDIR -v3 -a
 $SYSREPOCTL -c ieee802-dot1q-preemption -p 666 -o $OWNER -g $GROUP -v3 -a
+
 echo "ieee802-dot3br-preempt"
 # ieee802-dot3br-preempt module
 $SYSREPOCTL -i $MODDIR/ieee802-dot3br-preempt.yang -s $MODDIR -v3 -a
 $SYSREPOCTL -c ieee802-dot3br-preempt -p 666 -o $OWNER -g $GROUP -v3 -a
+
 echo "ieee802-ethernet-interface"
 # ieee802-ethernet-interface module
 $SYSREPOCTL -i $MODDIR/ieee802-ethernet-interface.yang -s $MODDIR -v3 -a

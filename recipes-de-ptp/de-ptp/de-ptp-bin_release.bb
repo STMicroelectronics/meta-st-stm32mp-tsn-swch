@@ -8,7 +8,7 @@ SRC_URI = "\
     "
 SRCREV = "${TSN_SRCREV}"
 
-PR = "st-1.6.7-2.5.2-${DE_PTP_DATE}"
+PV = "st-1.6.7-2.5.2-${DE_PTP_DATE}"
 
 TTTECH_DIR = "de-ptp/aarch64"
 S = "${WORKDIR}/git/${TTTECH_DIR}"

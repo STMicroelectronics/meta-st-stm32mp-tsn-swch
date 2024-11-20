@@ -8,7 +8,7 @@ SRCREV = "${TSN_SRCREV}"
 TTTECH_DIR = "tsn_sw_base.sysrepo-plugins"
 S = "${WORKDIR}/git/${TTTECH_DIR}"
 
-PR = "st-1.6.7"
+PV = "st-1.6.8"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"

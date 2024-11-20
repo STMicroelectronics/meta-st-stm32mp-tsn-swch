@@ -9,7 +9,7 @@ TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/ietf-interfaces-yang-module"
 S = "${WORKDIR}/git/${TTTECH_DIR}"
 
 SRC_URI += "file://0001-Patch-to-support-arm64-bits-compilation.patch"
-PR = "st-1.6.7"
+PV = "st-1.6.8"
 
 DEPENDS = "libbase libtsn libyang libnetconf2 sysrepo coreutils openssh openssl openssh-native libbsd"
 
@@ -20,9 +20,6 @@ inherit cmake pkgconfig
 # Specify any options you want to pass to cmake using EXTRA_OECMAKE:
 OECMAKE_C_FLAGS = "${HOST_CC_ARCH} ${TOOLCHAIN_OPTIONS} ${TARGET_CPPFLAGS} -Wno-error=stringop-truncation -Wno-error=cpp"
 EXTRA_OECMAKE = " -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE:String=Release -DSYSREPOCTL_EXECUTABLE=/usr/bin/sysrepoctl -DSYSREPOCFG_EXECUTABLE=/usr/bin/sysrepocfg -DCHMOD_EXECUTABLE=/bin/chmod "
-
-# Needed to update dynamic library name in elf file
-DEPENDS += "patchelf-native"
 
 do_install:append () {
     install -d ${D}/etc/netopeer2/yang
@@ -41,7 +38,5 @@ do_install:append () {
             mv ${D}/usr/lib ${D}/usr/lib64
         fi
     fi
-    patchelf --replace-needed libbase.so libbase.so.1 ${D}${libdir}/sysrepo/plugins/libietf-interfaces.so
-    patchelf --replace-needed libtsn.so libtsn.so.2 ${D}${libdir}/sysrepo/plugins/libietf-interfaces.so
 }
 INSANE_SKIP:${PN} = "file-rdeps"

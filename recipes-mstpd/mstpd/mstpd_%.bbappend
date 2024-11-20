@@ -1,16 +1,16 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/patches:"
 
-SRC_URI += "file://mstpd_flush.patch \
-            file://mstpd_tttech_deip.c \
-            file://mstp_tsn.h \
-            file://mstp_tsn_private.h \
-            file://mstpd_libtsn_integ.patch \
-            file://mstp_more_nodes.patch \
-            file://mstp_maxhops.patch \
-            file://brctl_not_on_image.patch \
-            file://te_msti.patch \
-            file://drop_support_for_STP.patch \
-            "
+SRC_URI += " \
+    file://0001-mstpd_flush.patch \
+    file://0002-mstpd_libtsn_integ.patch \
+    file://0003-mstp_more_nodes.patch \
+    file://0004-mstp_maxhops.patch \
+    file://0005-te_msti.patch \
+    file://0006-drop_support_for_STP.patch \
+    file://mstpd_tttech_deip.c \
+    file://mstp_tsn.h \
+    file://mstp_tsn_private.h \
+    "
 
 #disable strionop-truncation warning for mstpd
 EXTRA_OEMAKE += " CFLAGS='${CFLAGS} -fPIC -Wno-stringop-truncation' "

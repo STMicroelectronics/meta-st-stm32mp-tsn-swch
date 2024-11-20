@@ -7,7 +7,7 @@ INHIBIT_PACKAGE_STRIP = "1"
 SRC_URI = "${TSN_SRC_URI}"
 SRCREV = "${TSN_SRCREV}"
 
-PR = "st-1.6.7"
+PV = "st-1.6.8"
 
 TTTECH_DIR = "tsn_sw_base.netopeer-modules/libbase"
 S = "${WORKDIR}/git/${TTTECH_DIR}"
