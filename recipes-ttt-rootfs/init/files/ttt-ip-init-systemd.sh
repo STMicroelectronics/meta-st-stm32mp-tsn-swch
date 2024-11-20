@@ -1,7 +1,7 @@
 #!/bin/sh
 
 REF_ETH_INTERFACE=to_be_adapted_to_the_board
-IP_REF_NAME=42080000.rifsc/42080000.rifsc:ttt-sw@4c000000/4c000000.deip-sw
+IP_REF_NAME=42080000.bus/42080000.bus:ttt-sw@4c000000/4c000000.deip-sw
 
 # read mac address
 get_mac() {
