@@ -36,3 +36,5 @@ MAKE_TARGETS = "sched=fsc sid=sid"
 
 FILES_${PN}-dev += "${includedir}/${PN}/edge.h"
 FILES:${PN} += "${sysconfdir}/"
+
+do_create_runtime_spdx[depends] += "virtual/kernel:do_create_runtime_spdx"

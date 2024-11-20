@@ -17,3 +17,5 @@ S = "${WORKDIR}/git/${TTTECH_DIR}"
 PV = "st-1.6.7"
 
 EXTRA_OEMAKE += "KDIR='${STAGING_KERNEL_DIR}'"
+
+do_create_runtime_spdx[depends] += "virtual/kernel:do_create_runtime_spdx"
