@@ -7,31 +7,25 @@ INHIBIT_PACKAGE_STRIP = "1"
 SRC_URI = "${TSN_SRC_URI}"
 SRCREV = "${TSN_SRCREV}"
 
-PV = "st-1.6.9"
+PV = "st-1.6.10"
 
 TTTECH_DIR = "tsn_sw_base.netopeer-modules/${TTTECH_BINARY_ARCH}"
-S = "${WORKDIR}/git/${TTTECH_DIR}"
-
-DEPENDS = "coreutils-native"
+S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
 
 # ------------------------------------------------------------------
 TTTECH_BINARY_ARCH = "aarch64"
-TTTECH_BINARY_DATE = "2026-06-30"
+TTTECH_BINARY_DATE = "2026-09-29"
 TTTECH_BINARY_TARBALL = "TTTECH-libbase-${TTTECH_BINARY_ARCH}-${TTTECH_BINARY_DATE}"
-TTTECH_BINARIES_PATH = "${WORKDIR}/git/tsn_sw_base.netopeer-modules"
+TTTECH_BINARIES_PATH = "${UNPACKDIR}/${BP}/tsn_sw_base.netopeer-modules"
 inherit binaries-unpack
-
-
-EXTRA_OEMAKE = "-e -j 1 CCFLAGS='${CFLAGS} -fPIC -D_GNU_SOURCE -I${S}/include -DVER_FULL=\"1.0\"'"
 
 inherit bin_package
 
 do_install:append() {
     rm ${D}/TTTECH_license.txt
+    rm ${D}/libbase
 }
 FILES:${PN} = "${libdir}/lib*.so.*"
-
-FILES:${PN}-dev += " ${includedir}/libbase/*"
 
 RDEPENDS:${PN}-staticdev = ""
 RDEPENDS:${PN}-dev = ""
