@@ -4,12 +4,11 @@ SECTION = "libs"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=08a5578c9bab06fb2ae84284630b973f"
 
-SRC_URI = "git://github.com/CESNET/libnetconf2.git;protocol=https;nobranch=1"
+SRC_URI = "git://github.com/CESNET/libnetconf2.git;protocol=https;nobranch=1 \
+           file://0001-Update-cmake-minimum-required-to-3.5.patch"
 
 SRCREV = "c3fd42c6e3fd4cb0cbe6a10ee729b4566cfcb556"
 PR = "r0"
-
-S = "${WORKDIR}/git"
 
 DEPENDS = "libssh libssh-native openssl libyang libyang-native openssl-native libxcrypt"
 
