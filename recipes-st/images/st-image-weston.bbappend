@@ -7,6 +7,7 @@ CORE_IMAGE_EXTRA_INSTALL += " \
     linuxptp-configs \
     iperf3 \
     iproute2-tc \
+    iproute2-bridge \
     iproute2-devlink \
     openssh-keygen \
     ebtables \
