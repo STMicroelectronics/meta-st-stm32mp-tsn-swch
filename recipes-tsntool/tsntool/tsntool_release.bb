@@ -6,25 +6,26 @@ SRC_URI = "${TSN_SRC_URI}"
 SRCREV = "${TSN_SRCREV}"
 
 TTTECH_DIR = "tsn_sw_base.tsntool/${TTTECH_BINARY_ARCH}"
-S = "${WORKDIR}/git/${TTTECH_DIR}"
+S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
 
 SRC_URI += "file://LICENSE"
 
-PV = "st-1.6.9"
+PV = "st-1.6.10"
 
 # ------------------------------------------------------------------
 TTTECH_BINARY_ARCH = "aarch64"
-TTTECH_BINARY_DATE = "2026-06-30"
+TTTECH_BINARY_DATE = "2026-09-29"
 TTTECH_BINARY_TARBALL = "TTTECH-tsntool-${TTTECH_BINARY_ARCH}-${TTTECH_BINARY_DATE}"
-TTTECH_BINARIES_PATH = "${WORKDIR}/git/tsn_sw_base.tsntool/"
+TTTECH_BINARIES_PATH = "${UNPACKDIR}/${BP}/tsn_sw_base.tsntool/"
 inherit binaries-unpack
 
-DEPENDS = "coreutils-native libbsd"
+DEPENDS = "libbsd"
 
 do_install(){
     # library
     install -d ${D}/${libdir}
-    install -m 0755 ${S}/${libdir}/*.so* ${D}/${libdir}
+    install -m 0755 ${S}/${libdir}/*.so.* ${D}/${libdir}
+    ln -s libtsn.so.1.6 ${D}/${libdir}/libtsn.so
 
     # binary
     install -d ${D}/${bindir}
