@@ -10,8 +10,6 @@ SRC_URI = "git://github.com/CESNET/libyang.git;protocol=https;nobranch=1 \
 SRCREV = "e24ac91f03896008acc1664d4b3912fb6eea9a79"
 PR = "r0"
 
-S = "${WORKDIR}/git"
-
 DEPENDS = "libpcre"
 
 inherit cmake pkgconfig
@@ -21,4 +19,3 @@ EXTRA_OECMAKE = " -DCMAKE_INSTALL_PREFIX:PATH=/usr/ -DCMAKE_BUILD_TYPE:String=Re
 EXTRA_OECMAKE:class-native = " -DCMAKE_INSTALL_PREFIX:PATH=${STAGING_DIR_NATIVE}/usr/ -DCMAKE_BUILD_TYPE:String=Release "
 
 BBCLASSEXTEND += "native nativesdk"
-
