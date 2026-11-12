@@ -10,7 +10,7 @@ S = "${WORKDIR}/git/${TTTECH_DIR}"
 
 SRC_URI += "file://restore_datastore"
 
-PV = "st-1.6.9"
+PV = "st-1.6.10"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"

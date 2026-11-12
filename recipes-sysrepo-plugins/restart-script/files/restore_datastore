@@ -3,6 +3,37 @@
 # It will be installed on location /etc/sysrepo/restore_datastore
 #
 
+omit_reboot=0
+command="$1"
+
+netopeer2_state_path="/var/lib/netopeer2-server"
+sysrepo_state_path="/var/lib/sysrepo"
+
+print_help() {
+	cat <<-EOF
+		Usage: $0 [--omit-reboot]
+		Options:
+		    --omit-reboot   Do not reboot after restore
+	EOF
+}
+
+if [[ -n "$command" ]]; then
+	case $command in
+		--omit-reboot)
+			omit_reboot=1
+			;;
+		--help|-h)
+			print_help
+			exit 0
+			;;
+		*)
+			echo "Unknown option: $command"
+			print_help
+			exit 1
+			;;
+	esac
+fi
+
 # kill sysrepo-plugind
 PID=$(pidof sysrepo-plugind)
 
@@ -23,11 +54,16 @@ else
 	echo "Process netopeer2-server does not exist!"
 fi
 
-[ -e /etc/netopeer2/tls_listen_enabled ] && rm -f /etc/netopeer2/tls_listen_enabled
-[ -e  /etc/netopeer2/ssh_key_installed ] && rm -f /etc/netopeer2/ssh_key_installed
-[ -e /etc/netopeer2/server ] && rm -f /etc/netopeer2/server
-rm -rf /etc/sysrepo/{conn,data,yang,sr*}
+[ -e "$netopeer2_state_path/tls_listen_enabled" ] && rm -f "$netopeer2_state_path/tls_listen_enabled"
+[ -e  "$netopeer2_state_path/ssh_key_installed" ] && rm -f "$netopeer2_state_path/ssh_key_installed"
+[ -e  "$netopeer2_state_path/nacm_user_enabled" ] && rm -f "$netopeer2_state_path/nacm_user_enabled"
+[ -e "$netopeer2_state_path/server" ] && rm -f "$netopeer2_state_path/server"
+rm -rf "$sysrepo_state_path"/*
+rm -rf /dev/shm/sr*
 
 sync
 
-reboot
+if [ "$omit_reboot" = 0 ]; then
+	echo "Rebooting system..."
+	reboot
+fi
