@@ -35,6 +35,7 @@ wait_sysfs() {
 }
 
 st_configure() {
+    modprobe edgx_pfm_lkm
     get_soc_path
     wait_sysfs $SOC_PATH/$IP_REF_NAME/net/sw0p3/phy/mdiobus
     if [ -e $SOC_PATH/$IP_REF_NAME/net/sw0p3/phy/mdiobus ]; then

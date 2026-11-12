@@ -13,13 +13,13 @@ SRC_URI = " \
 FILES:${PN} += "${systemd_unitdir} ${sysconfdir}"
 SYSTEMD_SERVICE:${PN} = "st-tsn-networkd.service"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 do_install() {
 	if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
 		install -d ${D}${systemd_unitdir}/system ${D}${sbindir}
-		install -m 0644 ${WORKDIR}/st-tsn-networkd.service ${D}${systemd_unitdir}/system/
-		install -m 0755 ${WORKDIR}/ttt-ip-init-tsn-networkd-systemd.sh ${D}${sbindir}
+		install -m 0644 ${UNPACKDIR}/st-tsn-networkd.service ${D}${systemd_unitdir}/system/
+		install -m 0755 ${UNPACKDIR}/ttt-ip-init-tsn-networkd-systemd.sh ${D}${sbindir}
 	fi
 }
 RDEPENDS:${PN} += "ttt-ip-switch"

@@ -14,11 +14,11 @@ ALLOW_EMPTY:${PN} = "1"
 INITSCRIPT_NAME = "ttt-ip-init-switch-sysvinit.sh"
 INITSCRIPT_PARAMS = "defaults 99 99"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 do_install() {
 	install -d ${D}${sysconfdir}/init.d
 	# switch
-	install -m 0755 ${WORKDIR}/ttt-ip-init-switch-sysvinit.sh ${D}${sysconfdir}/init.d/ttt-ip-init-switch-sysvinit.sh
+	install -m 0755 ${UNPACKDIR}/ttt-ip-init-switch-sysvinit.sh ${D}${sysconfdir}/init.d/ttt-ip-init-switch-sysvinit.sh
 	sed -i -e "s/^REF_ETH_INTERFACE=.*$/REF_ETH_INTERFACE=${DEFAULT_ETHERNET_MAIN_TSN_BRIDGE_INTERFACE}/" ${D}${sysconfdir}/init.d/ttt-ip-init-switch-sysvinit.sh
 }

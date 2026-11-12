@@ -19,20 +19,20 @@ SRC_URI = " \
 FILES:${PN} += "${systemd_unitdir} ${sysconfdir}"
 SYSTEMD_SERVICE:${PN} = "st-init-switch.service"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 do_install() {
 	if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
 		install -d ${D}${sbindir}
-		install -m 0755 ${WORKDIR}/ttt-ip-common.sh ${D}${sbindir}
+		install -m 0755 ${UNPACKDIR}/ttt-ip-common.sh ${D}${sbindir}
 		sed -i -e "s/^REF_ETH_INTERFACE=.*$/REF_ETH_INTERFACE=${DEFAULT_ETHERNET_MAIN_TSN_BRIDGE_INTERFACE}/" ${D}${sbindir}/ttt-ip-common.sh
 
 		install -d ${D}${systemd_unitdir}/system ${D}${systemd_unitdir}/network
-		install -m 0644 ${WORKDIR}/72-*.netdev ${D}${systemd_unitdir}/network
-		install -m 0644 ${WORKDIR}/72-*.network ${D}${systemd_unitdir}/network
-		install -m 0644 ${WORKDIR}/72-*.network.sample ${D}${systemd_unitdir}/network
+		install -m 0644 ${UNPACKDIR}/72-*.netdev ${D}${systemd_unitdir}/network
+		install -m 0644 ${UNPACKDIR}/72-*.network ${D}${systemd_unitdir}/network
+		install -m 0644 ${UNPACKDIR}/72-*.network.sample ${D}${systemd_unitdir}/network
 
 		install -d ${D}${systemd_unitdir}/system
-		install -m 0644 ${WORKDIR}/st-init-switch.service ${D}${systemd_unitdir}/system/
+		install -m 0644 ${UNPACKDIR}/st-init-switch.service ${D}${systemd_unitdir}/system/
 	fi
 }

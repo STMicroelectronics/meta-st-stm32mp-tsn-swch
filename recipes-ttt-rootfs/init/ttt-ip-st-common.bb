@@ -6,22 +6,14 @@ PR = "r2"
 inherit systemd
 
 SRC_URI = " \
-	file://st-specific_action-tsn-systemd.sh \
-	file://st-specific_action-tsn-sysvinit.sh \
-	\
 	file://st-specific_macaddress.sh \
 	"
 
 FILES:${PN} += "${systemd_unitdir} ${sysconfdir}"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 do_install() {
 	install -d ${D}${bindir}
-	if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
-		install -m 0755 ${WORKDIR}/st-specific_action-tsn-systemd.sh ${D}${bindir}/st-specific_action-tsn.sh
-	else
-		install -m 0755 ${WORKDIR}/st-specific_action-tsn-sysvinit.sh ${D}${bindir}/st-specific_action-tsn.sh
-	fi
-	install -m 0755 ${WORKDIR}/st-specific_macaddress.sh ${D}${bindir}/
+	install -m 0755 ${UNPACKDIR}/st-specific_macaddress.sh ${D}${bindir}/
 }

@@ -16,18 +16,18 @@ INITSCRIPT_NAME = "ttt-ip-init-tsn-sysvinit.sh"
 INITSCRIPT_PARAMS = "defaults 99 99"
 SYSTEMD_SERVICE:${PN} = "st-tsn.service"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 do_install() {
 	if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
 		install -d ${D}${systemd_unitdir}/system ${D}${sbindir}
-		install -m 0644 ${WORKDIR}/st-tsn.service ${D}${systemd_unitdir}/system/
-		install -m 0755 ${WORKDIR}/ttt-ip-init-tsn-no-networkd.sh ${D}${sbindir}
+		install -m 0644 ${UNPACKDIR}/st-tsn.service ${D}${systemd_unitdir}/system/
+		install -m 0755 ${UNPACKDIR}/ttt-ip-init-tsn-no-networkd.sh ${D}${sbindir}
 		sed -i -e "s/^REF_ETH_INTERFACE=.*$/REF_ETH_INTERFACE=${DEFAULT_ETHERNET_MAIN_TSN_BRIDGE_INTERFACE}/" ${D}${sbindir}/ttt-ip-init-tsn-no-networkd.sh
 	else
 		install -d ${D}${sysconfdir}/init.d
 		# tsn
-		install -m 0755 ${WORKDIR}/ttt-ip-init-tsn-sysvinit.sh ${D}${sysconfdir}/init.d/ttt-ip-init-tsn-sysvinit.sh
+		install -m 0755 ${UNPACKDIR}/ttt-ip-init-tsn-sysvinit.sh ${D}${sysconfdir}/init.d/ttt-ip-init-tsn-sysvinit.sh
 		sed -i -e "s/^REF_ETH_INTERFACE=.*$/REF_ETH_INTERFACE=${DEFAULT_ETHERNET_MAIN_TSN_BRIDGE_INTERFACE}/" ${D}${sysconfdir}/init.d/ttt-ip-init-tsn-sysvinit.sh
 	fi
 }
