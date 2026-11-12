@@ -12,13 +12,14 @@ SRC_URI = "${TSN_SRC_URI}"
 SRCREV = "${TSN_SRCREV}"
 
 TTTECH_DIR = "tsn_sw_base.edge-lkm"
-S = "${WORKDIR}/git/${TTTECH_DIR}"
+S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
 
-PV = "st-1.6.9-1"
+PV = "st-1.6.10"
 
 SRC_URI += "\
     file://edgx_sw_modload.conf \
     file://edgx_sw_modprobe.conf \
+    file://blacklist_edgx.conf \
 "
 
 do_install:append() {
@@ -27,9 +28,11 @@ do_install:append() {
 
     install -d ${D}${sysconfdir}/modprobe.d/
     echo "options edgx_pfm_lkm netif=\"${DEFAULT_ETHERNET_MAIN_TSN_BRIDGE_INTERFACE}:0\"" > ${D}${sysconfdir}/modprobe.d/edgx_sw_core.conf
-    install -m 0644 ${WORKDIR}/edgx_sw_modprobe.conf ${D}${sysconfdir}/modprobe.d/edgx_sw_modprobe.conf
+    install -m 0644 ${UNPACKDIR}/edgx_sw_modprobe.conf ${D}${sysconfdir}/modprobe.d/edgx_sw_modprobe.conf
+    install -m 0644 ${UNPACKDIR}/blacklist_edgx.conf ${D}${sysconfdir}/modprobe.d/blacklist_edgx.conf
+
     install -d ${D}${sysconfdir}/modules-load.d/
-    install -m 0644 ${WORKDIR}/edgx_sw_modload.conf ${D}${sysconfdir}/modules-load.d/edgx_sw_modload.conf
+    install -m 0644 ${UNPACKDIR}/edgx_sw_modload.conf ${D}${sysconfdir}/modules-load.d/edgx_sw_modload.conf
 }
 
 MAKE_TARGETS = "sched=fsc sid=sid"

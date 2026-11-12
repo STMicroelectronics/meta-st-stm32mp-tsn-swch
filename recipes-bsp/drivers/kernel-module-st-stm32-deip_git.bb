@@ -12,9 +12,9 @@ SRC_URI = "${TSN_SRC_URI}"
 SRCREV = "${TSN_SRCREV}"
 
 TTTECH_DIR = "st.stm32-deip"
-S = "${WORKDIR}/git/${TTTECH_DIR}"
+S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
 
-PV = "st-1.6.7"
+PV = "st-1.6.10"
 
 EXTRA_OEMAKE += "KDIR='${STAGING_KERNEL_DIR}'"
 
