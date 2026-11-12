@@ -1,19 +1,9 @@
-From 4304f3f5f6ef3fcd3fb7d78e5cf36da9b8ac339e Mon Sep 17 00:00:00 2001
-From: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
-Date: Wed, 31 Jan 2024 15:17:09 +0100
-Subject: [PATCH 2/6] mstpd_libtsn_integ
-
----
- bridge_track.c | 8 ++++++--
- driver.h       | 3 +++
- mstp.c         | 3 +++
- 3 files changed, 12 insertions(+), 2 deletions(-)
-
+Upstream-Status: Inappropriate [embedded specific]
 diff --git a/bridge_track.c b/bridge_track.c
-index 0b9f504..0ea30a7 100644
+index 70512ce..2777117 100644
 --- a/bridge_track.c
 +++ b/bridge_track.c
-@@ -809,13 +809,17 @@ int CTL_get_fids2mstids(int br_index, __u16 *fids2mstids)
+@@ -811,13 +811,17 @@ int CTL_get_fids2mstids(int br_index, __u16 *fids2mstids)
  int CTL_set_vid2fid(int br_index, __u16 vid, __u16 fid)
  {
      CTL_CHECK_BRIDGE;
@@ -34,24 +24,23 @@ index 0b9f504..0ea30a7 100644
  
  int CTL_set_vids2fids(int br_index, __u16 *vids2fids)
 diff --git a/driver.h b/driver.h
-index ddfe4fc..94fc946 100644
+index ddfe4fc..177bc8f 100644
 --- a/driver.h
 +++ b/driver.h
-@@ -12,6 +12,9 @@
+@@ -12,6 +12,8 @@
  #ifndef _MSTP_DRIVER_H
  #define _MSTP_DRIVER_H
  
 +bool driver_set_fid2mstid(bridge_t *br, __u16 fid, __u16 mstid);
 +bool driver_set_vid2fid(bridge_t *br, __u16 vid, __u16 fid);
-+
  int driver_set_new_state(per_tree_port_t *ptp, int new_state);
  void driver_flush_all_fids(per_tree_port_t *ptp);
  unsigned int driver_set_ageing_time(port_t *prt, unsigned int ageingTime);
 diff --git a/mstp.c b/mstp.c
-index 2c38044..583317e 100644
+index 1ebdfa7..576eefb 100644
 --- a/mstp.c
 +++ b/mstp.c
-@@ -1344,6 +1344,8 @@ bool MSTP_IN_set_all_vids2fids(bridge_t *br, __u16 *vids2fids)
+@@ -1307,6 +1307,8 @@ bool MSTP_IN_set_all_vids2fids(bridge_t *br, __u16 *vids2fids)
          }
          if(br->fid2mstid[vids2fids[vid]] != br->fid2mstid[br->vid2fid[vid]])
              vid2mstid_changed = true;
@@ -60,7 +49,7 @@ index 2c38044..583317e 100644
      }
      memcpy(br->vid2fid, vids2fids, sizeof(br->vid2fid));
      if(vid2mstid_changed)
-@@ -1426,6 +1428,7 @@ bool MSTP_IN_set_all_fids2mstids(bridge_t *br, __u16 *fids2mstids)
+@@ -1389,6 +1391,7 @@ bool MSTP_IN_set_all_fids2mstids(bridge_t *br, __u16 *fids2mstids)
              if(tree->MSTID == MSTID[fid])
              {
                  found = true;
@@ -68,6 +57,11 @@ index 2c38044..583317e 100644
                  break;
              }
          }
--- 
-2.43.0
-
+@@ -1510,6 +1513,7 @@ bool MSTP_IN_create_msti(bridge_t *br, __u16 mstid)
+     }
+ 
+     list_add(&new_tree->bridge_list, &tree_after->bridge_list);
++
+     /* There are no FIDs allocated to this MSTID, so VID-to-MSTID mapping
+      *  did not change. So, no need in RecalcConfigDigest.
+      * Just initialize state machines for this tree.

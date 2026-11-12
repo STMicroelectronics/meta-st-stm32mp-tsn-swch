@@ -1,0 +1,32 @@
+Upstream-Status: Inappropriate [embedded specific]
+
+diff --git a/utils/ifupdown.sh.in b/utils/ifupdown.sh.in
+index 238076f..a26c9c0 100755
+--- a/utils/ifupdown.sh.in
++++ b/utils/ifupdown.sh.in
+@@ -25,11 +25,11 @@ mstpctl='@mstpctlfile@'
+ if [ ! -x "$mstpctl" ]; then
+   exit 0
+ fi
+-brcmd="$(command -v bridge)"
+-if [ -z "$brcmd" ] || [ ! -x "$brcmd" ]; then
+-  echo "'bridge' binary does not exist or is not executable" >&2
+-  exit 2
+-fi
++# brcmd="$(command -v bridge)"
++# if [ -z "$brcmd" ] || [ ! -x "$brcmd" ]; then
++#   echo "'bridge' binary does not exist or is not executable" >&2
++#   exit 2
++# fi
+ ip="$(command -v ip)"
+ if [ -z "$ip" ] || [ ! -x "$ip" ]; then
+   echo "'ip' binary does not exist or is not executable" >&2
+@@ -324,7 +324,7 @@ if [ "$MODE" = 'start' ]; then
+       # 'disabled', except if all ports are 'disabled' and we have yet to see
+       # any port transition to any other valid state.
+       converged=true
+-      for i in $("$brcmd" link show | grep "master $IFACE" | sed -n 's/^.*state[ ]*\([^ ]*\).*$/\1/p'); do
++      for i in $("$ip" -d -o link show master "$IFACE" | sed -n 's/^.*state[ \t]*\(.*\)$/\1/p' | cut -f 1 -d ' '); do
+         if [ "$i" = 'listening' ] || [ "$i" = 'learning' ]; then
+           transitioned=true
+           converged=''

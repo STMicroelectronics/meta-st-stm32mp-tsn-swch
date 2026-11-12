@@ -1,20 +1,9 @@
-From f20dc57c1d0e6fe63e043a1a1e0740a771314283 Mon Sep 17 00:00:00 2001
-From: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
-Date: Wed, 31 Jan 2024 15:48:35 +0100
-Subject: [PATCH 6/6] drop_support_for_STP
-
----
- bridge_track.c |  31 ++-----
- ctl_main.c     |   8 +-
- mstp.c         | 216 +++++++++++--------------------------------------
- mstp.h         |   4 +-
- 4 files changed, 58 insertions(+), 201 deletions(-)
-
+Upstream-Status: Inappropriate [embedded specific]
 diff --git a/bridge_track.c b/bridge_track.c
-index 7430269..a4616d4 100644
+index 5a06d54..f3487f1 100644
 --- a/bridge_track.c
 +++ b/bridge_track.c
-@@ -544,19 +544,7 @@ void MSTP_OUT_tx_bpdu(port_t *prt, bpdu_t * bpdu, int size)
+@@ -533,19 +533,7 @@ void MSTP_OUT_tx_bpdu(port_t *prt, bpdu_t * bpdu, int size)
  
      switch(bpdu->protocolVersion)
      {
@@ -31,11 +20,11 @@ index 7430269..a4616d4 100644
 -                    bpdu_type = "STP-UnknownType";
 -            }
 -            break;
-+        /* case protoSTP removed -> drop_support_for_STP.patch */
++	/* case protoSTP removed -> drop_support_for_STP.patch */
          case protoRSTP:
              bpdu_type = "RST";
              break;
-@@ -568,21 +556,14 @@ void MSTP_OUT_tx_bpdu(port_t *prt, bpdu_t * bpdu, int size)
+@@ -557,21 +545,14 @@ void MSTP_OUT_tx_bpdu(port_t *prt, bpdu_t * bpdu, int size)
      }
  
      ++(prt->num_tx_bpdu);
@@ -63,10 +52,10 @@ index 7430269..a4616d4 100644
      struct llc_header h;
      memcpy(h.dest_addr, bridge_group_address, ETH_ALEN);
 diff --git a/ctl_main.c b/ctl_main.c
-index b8504e2..bd2e7a1 100644
+index 0659741..e47cdf4 100644
 --- a/ctl_main.c
 +++ b/ctl_main.c
-@@ -1597,8 +1597,9 @@ static int cmd_setbridgeforcevers(int argc, char *const *argv)
+@@ -1526,8 +1526,9 @@ static int cmd_setbridgeforcevers(int argc, char *const *argv)
      int br_index = get_index(argv[1], "bridge");
      if(0 > br_index)
          return br_index;
@@ -78,21 +67,21 @@ index b8504e2..bd2e7a1 100644
      return set_bridge_cfg(protocol_version, vals[getenum(argv[2], opts)]);
  }
  
-@@ -2286,7 +2287,8 @@ static const struct command commands[] =
+@@ -2202,7 +2203,8 @@ static const struct command commands[] =
      {2, 0, "setageing", cmd_setbridgeageing,
       "<bridge> <ageing_time>", "Set bridge ageing time (10-1000000)"},
      {2, 0, "setforcevers", cmd_setbridgeforcevers,
 -     "<bridge> {mstp|rstp|stp}", "Force Spanning Tree protocol version"},
-+     /* case stp removed -> drop_support_for_STP.patch */
++    /* case stp removed -> drop_support_for_STP.patch */
 +     "<bridge> {mstp|rstp}", "Force Spanning Tree protocol version"},
      {2, 0, "settxholdcount", cmd_setbridgetxholdcount,
       "<bridge> <tx_hold_count>", "Set bridge transmit hold count (1-10)"},
      /* Set tree bridge */
 diff --git a/mstp.c b/mstp.c
-index 9cfebfb..619afa2 100644
+index a1589e5..89c6608 100644
 --- a/mstp.c
 +++ b/mstp.c
-@@ -621,22 +621,8 @@ bpdu_validation_failed:
+@@ -608,22 +608,8 @@ bpdu_validation_failed:
      }
      switch(bpdu->bpduType)
      {
@@ -112,15 +101,16 @@ index 9cfebfb..619afa2 100644
 -                        (bpdu->flags & (1 << offsetTc)) ? ", tcFlag" : ""
 -                       );
 -            break;
-+        /* case bpduTypeTCN removed -> drop_support_for_STP.patch */
-+        /* case bpduTypeConfig removed -> drop_support_for_STP.patch */
++	/* case bpduTypeTCN removed -> drop_support_for_STP.patch */
++	/* case bpduTypeConfig removed -> drop_support_for_STP.patch */
          case bpduTypeRST:
              if(protoRSTP == bpdu->protocolVersion)
              { /* 14.4.c) */
-@@ -686,15 +672,9 @@ bpdu_validation_failed:
+@@ -672,16 +658,9 @@ bpdu_validation_failed:
+         default:
              goto bpdu_validation_failed;
      }
- 
+-
 -    if((protoSTP == bpdu->protocolVersion) && (bpduTypeTCN == bpdu->bpduType))
 -    {
 +    /* if involving protoSTP and bpduTypeTCN removed -> drop_support_for_STP.patch */
@@ -135,21 +125,21 @@ index 9cfebfb..619afa2 100644
  
      assign(prt->rcvdBpduData, *bpdu);
      prt->rcvdBpdu = true;
-@@ -811,7 +791,7 @@ int MSTP_IN_set_cist_bridge_config(bridge_t *br, CIST_BridgeConfig *cfg)
+@@ -798,7 +777,7 @@ int MSTP_IN_set_cist_bridge_config(bridge_t *br, CIST_BridgeConfig *cfg)
      {
          switch(cfg->protocol_version)
          {
 -            case protoSTP:
-+            /* case protoSTP removed -> drop_support_for_STP.patch */
++	    /* case protoSTP removed -> drop_support_for_STP.patch */
              case protoRSTP:
              case protoMSTP:
                  break;
-@@ -1869,45 +1849,40 @@ static port_info_t rcvInfo(per_tree_port_t *ptp)
+@@ -1832,45 +1811,40 @@ static port_info_t rcvInfo(per_tree_port_t *ptp)
  
      if(0 == ptp->MSTID)
      { /* CIST */
 -        if(protoSTP != b->protocolVersion)
-+        /* if involving protoSTP removed -> drop_support_for_STP.patch */
++	/* if involving protoSTP removed -> drop_support_for_STP.patch */
 +        switch(BPDU_FLAGS_ROLE_GET(b->flags))
          {
 -            switch(BPDU_FLAGS_ROLE_GET(b->flags))
@@ -209,18 +199,17 @@ index 9cfebfb..619afa2 100644
 -        { /* 13.26.6.NOTE: A Configuration BPDU implicitly conveys a
 -           *   Designated Port Role */
 -            roleIsDesignated = true;
--        }
 +                }
 +                break;
 +            default:
 +                return OtherInfo;
-+         }
-+        /* else involving protoSTP removed -> drop_support_for_STP.patch */
+         }
++	/* else involving protoSTP removed -> drop_support_for_STP.patch */
 +
          cist = true;
  
          assign(mPri->RRootID, b->cistRRootID);
-@@ -2360,39 +2335,7 @@ static void syncMaster(bridge_t *br)
+@@ -2323,39 +2297,7 @@ static void syncMaster(bridge_t *br)
  }
  
  /* 13.26.19 txConfig */
@@ -261,7 +250,7 @@ index 9cfebfb..619afa2 100644
  
  static inline __u8 message_role_from_port_role(per_tree_port_t *ptp)
  {
-@@ -2520,20 +2463,7 @@ static void txMstp(port_t *prt)
+@@ -2483,20 +2425,7 @@ static void txMstp(port_t *prt)
  }
  
  /* 13.26.a) txTcn */
@@ -283,7 +272,7 @@ index 9cfebfb..619afa2 100644
  
  /* 13.26.21 updtBPDUVersion */
  static void updtBPDUVersion(port_t *prt)
-@@ -3012,15 +2942,7 @@ static void PPMSM_to_CHECKING_RSTP(port_t *prt/*, bool begin*/)
+@@ -2966,15 +2895,7 @@ static void PPMSM_to_CHECKING_RSTP(port_t *prt/*, bool begin*/)
       *     PPMSM_run(prt, false); */
  }
  
@@ -300,7 +289,7 @@ index 9cfebfb..619afa2 100644
  
  static void PPMSM_to_SENSING(port_t *prt)
  {
-@@ -3054,14 +2976,7 @@ static bool PPMSM_run(port_t *prt, bool dry_run)
+@@ -3008,14 +2929,7 @@ static bool PPMSM_run(port_t *prt, bool dry_run)
                  PPMSM_to_SENSING(prt);
              }
              return false;
@@ -312,11 +301,11 @@ index 9cfebfb..619afa2 100644
 -                PPMSM_to_SENSING(prt);
 -            }
 -            return false;
-+        /* case PPMSM_SELECTING_STP removed -> drop_support_for_STP.patch */
++	/* case PPMSM_SELECTING_STP removed -> drop_support_for_STP.patch */
          case PPMSM_SENSING:
              if(!prt->portEnabled || prt->mcheck
                 || (rstpVersion(br) && !prt->sendRSTP && prt->rcvdRSTP))
-@@ -3071,12 +2986,7 @@ static bool PPMSM_run(port_t *prt, bool dry_run)
+@@ -3025,12 +2939,7 @@ static bool PPMSM_run(port_t *prt, bool dry_run)
                  PPMSM_to_CHECKING_RSTP(prt);
                  return false;
              }
@@ -326,11 +315,11 @@ index 9cfebfb..619afa2 100644
 -                    return true;
 -                PPMSM_to_SELECTING_STP(prt);
 -            }
-+            /* if involving PPMSM_to_SELECTING_STP call removed -> drop_support_for_STP.patch */
++	    /* if involving PPMSM_to_SELECTING_STP call removed -> drop_support_for_STP.patch */
              return false;
      }
  
-@@ -3177,28 +3087,8 @@ static bool PTSM_to_TRANSMIT_INIT(port_t *prt, bool begin, bool dry_run)
+@@ -3131,28 +3040,9 @@ static bool PTSM_to_TRANSMIT_INIT(port_t *prt, bool begin, bool dry_run)
      return false;
  }
  
@@ -353,15 +342,15 @@ index 9cfebfb..619afa2 100644
 -    prt->newInfo = false;
 -    txTcn(prt);
 -    ++(prt->txCount);
--
++/* PTSM_to_TRANSMIT_CONFIG removed -> drop_support_for_STP.patch */
+ 
 -    PTSM_run(prt, false /* actual run */);
 -}
-+/* PTSM_to_TRANSMIT_CONFIG removed -> drop_support_for_STP.patch */
 +/* PTSM_to_TRANSMIT_TCN removed -> drop_support_for_STP.patch */
  
  static void PTSM_to_TRANSMIT_RSTP(port_t *prt)
  {
-@@ -3256,7 +3146,7 @@ static bool PTSM_run(port_t *prt, bool dry_run)
+@@ -3210,7 +3100,7 @@ static bool PTSM_run(port_t *prt, bool dry_run)
  {
     /* bool allTransmitReady; */
      per_tree_port_t *ptp;
@@ -370,16 +359,16 @@ index 9cfebfb..619afa2 100644
      bool mstiMasterPort;
  
      if(!prt->portEnabled)
-@@ -3287,7 +3177,7 @@ static bool PTSM_run(port_t *prt, bool dry_run)
+@@ -3241,7 +3131,7 @@ static bool PTSM_run(port_t *prt, bool dry_run)
                  /* allTransmitReady = false; */
                  return false;
              }
 -            cistRole = ptp->role;
-+            /* cistRole assignment removed as not used anymore -> drop_support_for_STP.patch */
++	    /* cistRole assignment removed as not used anymore -> drop_support_for_STP.patch */
              mstiMasterPort = false;
              list_for_each_entry_continue(ptp, &prt->trees, port_list)
              {
-@@ -3324,23 +3214,7 @@ static bool PTSM_run(port_t *prt, bool dry_run)
+@@ -3274,23 +3164,7 @@ static bool PTSM_run(port_t *prt, bool dry_run)
                      return false;
                  }
              }
@@ -400,12 +389,12 @@ index 9cfebfb..619afa2 100644
 -                    return false;
 -                }
 -            }
-+            /* else removed involving fallback to STP -> drop_support_for_STP.patch */
++	    /* else removed involving fallback to STP -> drop_support_for_STP.patch */
              return false;
      }
  
 diff --git a/mstp.h b/mstp.h
-index a3381f0..a8a8687 100644
+index f1b9116..f6205c6 100644
 --- a/mstp.h
 +++ b/mstp.h
 @@ -216,7 +216,7 @@ typedef enum
@@ -426,6 +415,3 @@ index a3381f0..a8a8687 100644
      PPMSM_SENSING
  } PPMSM_states_t;
  
--- 
-2.43.0
-
