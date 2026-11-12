@@ -3,23 +3,24 @@
 # Source function library.
 . /etc/init.d/functions
 
+netopeer2_state_path="/var/lib/netopeer2-server"
 sysrepo_ready="/run/sysrepo-plugind.ready"
 
 init_server() {
     rm -rf /dev/shm/sr_* /dev/shm/srsub_*
-    /usr/share/netopeer2-server/setup.sh /usr/bin/sysrepoctl /usr/bin/sysrepocfg /etc/netopeer2/yang/ root > /var/log/sysrepo.log 2>&1
-    touch /etc/netopeer2/server
+    /usr/share/netopeer2-server/setup.sh /usr/bin/sysrepoctl /usr/bin/sysrepocfg /usr/share/yang/modules/ root > /var/log/sysrepo.log 2>&1
+    touch $netopeer2_state_path/server
 }
 
 setup_ssh() {
-    /usr/share/netopeer2-server/install_ssh_key.sh
-    /usr/share/netopeer2-server/enable_ssh.sh
-    touch /etc/netopeer2/ssh_key_installed
+	/usr/share/netopeer2-server/install_ssh_key.sh
+	/usr/share/netopeer2-server/enable_ssh.sh
+	touch $netopeer2_state_path/ssh_key_installed
 }
 
 setup_tls() {
-    /usr/share/netopeer2-server/install_and_enable_tls.sh
-    touch /etc/netopeer2/tls_listen_enabled
+	/usr/share/netopeer2-server/install_and_enable_tls.sh
+	touch $netopeer2_state_path/tls_listen_enabled
 }
 
 wait_sysrepo_ready() {
@@ -39,10 +40,11 @@ wait_sysrepo_ready() {
 
 case "$1" in
     start)
-        test -r /etc/netopeer2/server || init_server
-        # start sysrepo pluging daemon, this has to be done AFTER installing the modules apparently
-        test -r /etc/netopeer2/ssh_key_installed || setup_ssh
-        test -r /etc/netopeer2/tls_listen_enabled || setup_tls
+        mkdir -p $netopeer2_state_path
+        test -r $netopeer2_state_path/server || init_server
+        # start sysrepo pluging daemon, this has to be done AFTER installing the modules
+        test -r $netopeer2_state_path/ssh_key_installed || setup_ssh
+        test -r $netopeer2_state_path/tls_listen_enabled || setup_tls
         rm -f $sysrepo_ready
         sysrepo-plugind -v3 -d >> /var/log/sysrepo.log 2>&1 &
         wait_sysrepo_ready
@@ -51,8 +53,7 @@ case "$1" in
     stop)
         #kill netopeer2-server
         PID=$(pidof netopeer2-server)
-        if [ "" !=  "$PID" ]
-        then
+        if [ "" !=  "$PID" ]; then
             echo "killing netopeer2-server ($PID)"
             kill -9 $PID
         else
@@ -60,8 +61,7 @@ case "$1" in
         fi
         #kill sysrepo-plugind
         PID=$(pidof sysrepo-plugind)
-        if [ "" !=  "$PID" ]
-        then
+        if [ "" !=  "$PID" ]; then
             echo "killing sysrepo-plugind ($PID)"
             kill -9 $PID
         else
@@ -74,9 +74,9 @@ case "$1" in
         ;;
     restore)
         $0 stop
-        rm touch /etc/netopeer2/ssh_key_installed
+        touch $netopeer2_state_path/ssh_key_installed
         rm /etc/ssh/ssh_host_rsa_key
-        touch /etc/netopeer2/server
+        touch $netopeer2_state_path/server
         if [ -e /etc/sysrepo/restore_datastore ]; then
             /etc/sysrepo/restore_datastore
         fi

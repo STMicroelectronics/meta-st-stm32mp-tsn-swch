@@ -12,5 +12,3 @@ sysrepocfg -C running -m ietf-keystore -v2
 sysrepocfg --edit=/usr/share/netopeer2-server/startup_tls_server_conf.xml -d startup -f xml -m ietf-netconf-server -v2
 sysrepocfg -C startup -m ietf-netconf-server -v2
 sysrepocfg -C running -m ietf-netconf-server -v2
-
-

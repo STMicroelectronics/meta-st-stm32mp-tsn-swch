@@ -5,6 +5,7 @@ Subject: [PATCH] CMakeLists.patch
 
 Signed-off-by: Christophe Priouzeau <christophe.priouzeau@foss.st.com>
 ---
+Upstream-Status: Inappropriate [embedded specific]
  CMakeLists.txt | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 

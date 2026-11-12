@@ -13,6 +13,7 @@ SRC_URI = "git://github.com/CESNET/Netopeer2.git;protocol=https;branch=libyang1 
 	   file://startup_tls_keystore.xml \
 	   file://startup_tls_server_conf.xml \
 	   file://sysrepo_plugins_boot_order.xml \
+	   file://0001-Update-cmake-minimum-required-to-3.5.patch \
 	   file://0001-CMakeLists.patch.patch \
 	   \
 	   file://netopeer2-server.service \
@@ -22,8 +23,6 @@ SRC_URI = "git://github.com/CESNET/Netopeer2.git;protocol=https;branch=libyang1 
 	   "
 SRCREV = "1a4d404a91ab71f526bc42f8e482c4b675460dc8"
 PR = "r0"
-
-S = "${WORKDIR}/git"
 
 DEPENDS += "libyang libnetconf2 sysrepo sysrepo-native curl libssh"
 DEPENDS:class-native:append = " libyang libnetconf2 sysrepo curl libssh "
@@ -43,6 +42,7 @@ EXTRA_OECMAKE:class-nativesdk = " -DCMAKE_INSTALL_PREFIX=${STAGING_INCDIR_NATIVE
 		  -DSYSREPOCFG_EXECUTABLE=${STAGING_INCDIR_NATIVE}/sysrepocfg -DSTOCK_CONFIG=${STAGING_INCDIR_NATIVE}/usr/share/netopeer2-server/startup_server_conf.xml \
 		  -DYANG_DIR=${STAGING_INCDIR_NATIVE}/etc/netopeer2/yang/ -DMODULES_OWNER=root -DGENERATE_HOSTKEY=OFF -DINSTALL_MODULES=OFF -DMERGE_LISTEN_CONFIG=OFF -DDEFAULT_HOSTKEY=ssh_host_rsa_key "
 
+EXTRA_OECMAKE:append = " -DCMAKE_POLICY_VERSION_MINIMUM=3.5"
 
 INITSCRIPT_NAME = "netopeer2-server"
 INITSCRIPT_PARAMS = "disable"
@@ -51,23 +51,24 @@ SYSTEMD_AUTO_ENABLE:${PN} = "disable"
 
 do_install:append () {
     install -d ${D}${datadir}/netopeer2-server
-    install -m 0755 ${WORKDIR}/install_ssh_key.sh ${D}${datadir}/netopeer2-server/
-    install -m 0755 ${WORKDIR}/enable_ssh.sh ${D}${datadir}/netopeer2-server/
-    install -m 0755 ${WORKDIR}/install_and_enable_tls.sh ${D}${datadir}/netopeer2-server/
-    install -m 0755 ${WORKDIR}/setup.sh ${D}${datadir}/netopeer2-server/
-    install -m 0555 ${WORKDIR}/startup_tls_*.xml ${D}${datadir}/netopeer2-server/
-    install -m 0777 ${WORKDIR}/sysrepo_plugins_boot_order.xml ${D}${datadir}/netopeer2-server/
-    install -d ${D}${sysconfdir}/netopeer2
-    install -d ${D}${sysconfdir}/netopeer2/yang
-    cp -r ${S}/modules/*.yang ${D}${sysconfdir}/netopeer2/yang/
+    install -m 0755 ${UNPACKDIR}/install_ssh_key.sh ${D}${datadir}/netopeer2-server/
+    install -m 0755 ${UNPACKDIR}/enable_ssh.sh ${D}${datadir}/netopeer2-server/
+    install -m 0755 ${UNPACKDIR}/install_and_enable_tls.sh ${D}${datadir}/netopeer2-server/
+    install -m 0755 ${UNPACKDIR}/setup.sh ${D}${datadir}/netopeer2-server/
+    install -m 0555 ${UNPACKDIR}/startup_tls_*.xml ${D}${datadir}/netopeer2-server/
+    install -m 0777 ${UNPACKDIR}/sysrepo_plugins_boot_order.xml ${D}${datadir}/netopeer2-server/
+
+    install -d ${D}${datadir}/yang/modules
+    cp -r ${S}/modules/*.yang ${D}${datadir}/yang/modules
+
     install -d ${D}${sysconfdir}/init.d
-    install -m 0755 ${WORKDIR}/netopeer2-server ${D}${sysconfdir}/init.d/
+    install -m 0755 ${UNPACKDIR}/netopeer2-server ${D}${sysconfdir}/init.d/
 
     if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
         install -d ${D}${systemd_unitdir}/system
-        install -m 0644 ${WORKDIR}/netopeer2-server.service ${D}${systemd_unitdir}/system/
+        install -m 0644 ${UNPACKDIR}/netopeer2-server.service ${D}${systemd_unitdir}/system/
     fi
-    install -m 0755 ${WORKDIR}/netopeer2-server-service ${D}${datadir}/netopeer2-server/
+    install -m 0755 ${UNPACKDIR}/netopeer2-server-service ${D}${datadir}/netopeer2-server/
 }
 
 RDEPENDS:${PN} += "bash"
@@ -101,6 +102,6 @@ do_deploy:class-native() {
     install -m 0444 ${STAGING_LIBDIR_NATIVE}/libpcre.so.1.* ${DEPLOYDIR}/scripts/lib/
     ln -n ${STAGING_LIBDIR_NATIVE}/libpcre.so.1.* ${DEPLOYDIR}/scripts/lib/libpcre.so.1
     # script
-    install -m 0755 ${WORKDIR}/exec-netopeer2-cli.sh ${DEPLOYDIR}/scripts/
+    install -m 0755 ${UNPACKDIR}/exec-netopeer2-cli.sh ${DEPLOYDIR}/scripts/
 }
 addtask deploy before do_build after do_compile
