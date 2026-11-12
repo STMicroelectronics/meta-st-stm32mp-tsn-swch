@@ -4,16 +4,26 @@ DEPENDS += "libsysrepo-plugin-helpers"
 PR = "r0"
 PV = "st-1.6.10"
 
-TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/module-versions"
+TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/${TTTECH_BINARY_ARCH}"
 S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
 
-FILES:${PN} += "${libdir}/sysrepo/* ${datadir}/${BPN}/* ${datadir}/yang/*"
+# ------------------------------------------------------------------
+TTTECH_BINARY_ARCH = "aarch64"
+TTTECH_BINARY_DATE = "2026-09-29"
+TTTECH_BINARY_TARBALL = "TTTECH-sysrepo-plugins-${TTTECH_BINARY_ARCH}-${TTTECH_BINARY_DATE}"
+TTTECH_BINARIES_PATH = "${UNPACKDIR}/${BP}/tsn_sw_base.sysrepo-plugins"
+inherit binaries-unpack
 
-do_install:append() {
-    install -d ${D}${datadir}/yang/modules
-    cp -r ${S}/../YANG_modules_repository/sysrepo-module-versions.yang ${D}${datadir}/yang/modules
-    install -d ${D}${datadir}/${BPN}
-    cp -r ${S}/module-versions.data.xml ${D}${datadir}/${BPN}
+FILES:${PN} += "${libdir}/sysrepo/* ${datadir}/"
+
+do_install() {
+    install -d ${D}${datadir}/yang/modules ${D}/${libdir}/sysrepo/plugins/ ${D}${datadir}/sysrepo-plugin-module-versions
+    # yang modules
+    install -m 0644 ${S}${datadir}/yang/modules/sysrepo-module-versions.yang ${D}${datadir}/yang/modules
+    install -m 0644 ${S}${datadir}/sysrepo-plugin-module-versions/module-versions.data.xml ${D}${datadir}/sysrepo-plugin-module-versions
+
+    # library
+    install -m 0644 ${S}/${libdir}/sysrepo/plugins/libmodule-versions.so ${D}/${libdir}/sysrepo/plugins/
 
     if [ "${libdir}" != "/usr/lib" ];
     then
@@ -22,6 +32,4 @@ do_install:append() {
         fi
     fi
 }
-
-INSANE_SKIP:${PN} = "file-rdeps"
 INSANE_SKIP:${PN}-dbg += "buildpaths"

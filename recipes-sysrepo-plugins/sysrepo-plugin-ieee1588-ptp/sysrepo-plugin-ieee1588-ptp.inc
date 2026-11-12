@@ -4,19 +4,26 @@ DEPENDS += "libsysrepo-plugin-helpers de-ptp-bin libtsn"
 PR = "r0"
 PV = "st-1.6.10"
 
-TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/ieee1588-ptp"
+TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/${TTTECH_BINARY_ARCH}"
 S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
+
+# ------------------------------------------------------------------
+TTTECH_BINARY_ARCH = "aarch64"
+TTTECH_BINARY_DATE = "2026-09-29"
+TTTECH_BINARY_TARBALL = "TTTECH-sysrepo-plugins-${TTTECH_BINARY_ARCH}-${TTTECH_BINARY_DATE}"
+TTTECH_BINARIES_PATH = "${UNPACKDIR}/${BP}/tsn_sw_base.sysrepo-plugins"
+inherit binaries-unpack
 
 FILES:${PN} += "${libdir}/sysrepo/* ${datadir}/yang/*"
 
-EXTRA_OECMAKE += " -DLIBPTP=${STAGING_LIBDIR}/libptp.so.0 -DLIBPTP_LIBRARIES=${STAGING_LIBDIR}/libptp.so.0 -DLIBPTP_INCLUDE_DIR=${STAGING_INCDIR}"
-EXTRA_OECMAKE += " -DLIBPTP_MANAGEMENT=${STAGING_LIBDIR}/libptp_management.so.0 -DLIBPTP_MANAGEMENT_LIBRARIES=${STAGING_LIBDIR}/libptp_management.so.0 -DLIBPTP_MANAGEMENT_INCLUDE_DIR=${STAGING_INCDIR}"
+do_install() {
+    install -d ${D}${datadir}/yang/modules ${D}/${libdir}/sysrepo/plugins/
+    # yang modules
+    install -m 0644 ${S}${datadir}/yang/modules/ieee1588-ptp-tt.yang ${D}${datadir}/yang/modules
+    install -m 0644 ${S}${datadir}/yang/modules/ieee802-dot1as-gptp.yang ${D}${datadir}/yang/modules
 
-
-do_install:append() {
-    install -d ${D}${datadir}/yang/modules
-    cp -r ${S}/../YANG_modules_repository/ieee1588-ptp-tt.yang ${D}${datadir}/yang/modules
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1as-gptp.yang ${D}${datadir}/yang/modules
+    # library
+    install -m 0644 ${S}/${libdir}/sysrepo/plugins/libieee1588-ptp.so ${D}/${libdir}/sysrepo/plugins/
 
     if [ "${libdir}" != "/usr/lib" ];
     then
@@ -25,6 +32,4 @@ do_install:append() {
         fi
     fi
 }
-
-INSANE_SKIP:${PN} = "file-rdeps"
 INSANE_SKIP:${PN}-dbg += "buildpaths"

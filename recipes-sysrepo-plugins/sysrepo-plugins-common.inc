@@ -2,8 +2,7 @@
 SRC_URI = "${TSN_SRC_URI}"
 SRCREV = "${TSN_SRCREV}"
 
-inherit cmake pkgconfig
+TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/${TTTECH_BINARY_ARCH}"
+S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
 
 DEPENDS = "sysrepo libyang"
-
-EXTRA_OECMAKE = " -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE:String=Release "

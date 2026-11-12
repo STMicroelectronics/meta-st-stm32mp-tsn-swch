@@ -4,17 +4,28 @@ DEPENDS += "libsysrepo-plugin-helpers"
 PR = "r0"
 PV = "st-1.6.10"
 
-TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/mstp"
+TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/${TTTECH_BINARY_ARCH}"
 S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
+
+# ------------------------------------------------------------------
+TTTECH_BINARY_ARCH = "aarch64"
+TTTECH_BINARY_DATE = "2026-09-29"
+TTTECH_BINARY_TARBALL = "TTTECH-sysrepo-plugins-${TTTECH_BINARY_ARCH}-${TTTECH_BINARY_DATE}"
+TTTECH_BINARIES_PATH = "${UNPACKDIR}/${BP}/tsn_sw_base.sysrepo-plugins"
+inherit binaries-unpack
 
 FILES:${PN} += "${libdir}/sysrepo/* ${datadir}/yang/*"
 
-do_install:append() {
-    install -d ${D}${datadir}/yang/modules
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1q-mstp.yang ${D}${datadir}/yang/modules
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1q-mstp-bridge.yang ${D}${datadir}/yang/modules
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1q-rstp.yang ${D}${datadir}/yang/modules
-    cp -r ${S}/../YANG_modules_repository/ieee802-dot1q-rstp-bridge.yang ${D}${datadir}/yang/modules
+do_install() {
+    install -d ${D}${datadir}/yang/modules ${D}/${libdir}/sysrepo/plugins/
+    # yang modules
+    install -m 0644 ${S}${datadir}/yang/modules/ieee802-dot1q-mstp-bridge.yang ${D}${datadir}/yang/modules
+    install -m 0644 ${S}${datadir}/yang/modules/ieee802-dot1q-mstp.yang ${D}${datadir}/yang/modules
+    install -m 0644 ${S}${datadir}/yang/modules/ieee802-dot1q-rstp-bridge.yang ${D}${datadir}/yang/modules
+    install -m 0644 ${S}${datadir}/yang/modules/ieee802-dot1q-rstp.yang ${D}${datadir}/yang/modules
+
+    # library
+    install -m 0644 ${S}/${libdir}/sysrepo/plugins/libmstp.so ${D}/${libdir}/sysrepo/plugins/
 
     if [ "${libdir}" != "/usr/lib" ];
     then
@@ -23,6 +34,4 @@ do_install:append() {
         fi
     fi
 }
-
-INSANE_SKIP:${PN} = "file-rdeps"
 INSANE_SKIP:${PN}-dbg += "buildpaths"

@@ -4,14 +4,29 @@ SECTION = "tsn-base"
 PR = "r1"
 PV = "st-1.6.10"
 
-TTTECH_DIR = "tsn_sw_base.sysrepo-plugins/libsysrepo-plugin-helpers"
-S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
+# ------------------------------------------------------------------
+TTTECH_BINARY_ARCH = "aarch64"
+TTTECH_BINARY_DATE = "2026-09-29"
+TTTECH_BINARY_TARBALL = "TTTECH-sysrepo-plugins-${TTTECH_BINARY_ARCH}-${TTTECH_BINARY_DATE}"
+TTTECH_BINARIES_PATH = "${UNPACKDIR}/${BP}/tsn_sw_base.sysrepo-plugins"
+inherit binaries-unpack
 
 FILES:${PN} = "${libdir}/libsysrepo-plugin-helpers*.so.*"
-FILES:${PN}-dev = "${libdir}/libsysrepo-plugin-helpers.so ${libdir}/libsysrepo-plugin-helpers.a ${includedir}/sysrepo-plugin-helpers/*"
+FILES:${PN}-dev = "${libdir}/libsysrepo-plugin-helpers.so"
 
 do_install() {
-    mkdir -p ${D}${libdir} ${D}${includedir}/sysrepo-plugin-helpers
-    cp -d ${B}/libsysrepo-plugin-helpers* ${D}${libdir}/
-    install -m 0644 ${S}/include/*.h ${D}/${includedir}/sysrepo-plugin-helpers
+    install -d ${D}/${libdir}
+    # library
+    install -m 0644 ${S}/${libdir}/libsysrepo-plugin-helpers.so.1.0.0 ${D}/${libdir}
+    ln -s libsysrepo-plugin-helpers.so.1.0.0 ${D}/${libdir}/libsysrepo-plugin-helpers.so.1
+    ln -s libsysrepo-plugin-helpers.so.1.0.0 ${D}/${libdir}/libsysrepo-plugin-helpers.so
+
+
+    if [ "${libdir}" != "/usr/lib" ];
+    then
+        if [ -d ${D}/usr/lib ]; then
+            mv ${D}/usr/lib ${D}/usr/lib64
+        fi
+    fi
 }
+INSANE_SKIP:${PN}-dbg += "buildpaths"
