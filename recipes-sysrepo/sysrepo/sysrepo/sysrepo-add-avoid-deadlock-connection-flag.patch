@@ -3,6 +3,8 @@ From: Jukka Partanen <jukka.partanen@tttech.com>
 Date: Tue, 20 Jun 2023 07:46:09 +0300
 Subject: [PATCH] Add new connection flag to avoid deadlocks
 
+Upstream-Status: Inappropriate [TTTech-specific]
+
 When two threads use sr_apply_changes() to change configuration in
 datastore, a deadlock can happen. This is caused by the way sysrepo
 handles READ/WRITE locking for such changes: it always acquires a READ

@@ -1,0 +1,77 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Yocto Builder <builder@yoctoproject.org>
+Date: Sun, 25 May 2026 00:00:00 +0000
+Subject: [PATCH] Update cmake minimum required to 3.5
+
+CMake 4.3 requires minimum version 3.5.
+
+Upstream-Status: Inappropriate [embedded specific]
+Signed-off-by: Yocto Builder <builder@yoctoproject.org>
+---
+ CMakeLists.txt                | 2 +-
+ CMakeModules/UseCompat.cmake  | 2 +-
+ CMakeModules/uninstall.cmake  | 2 +-
+ examples/CMakeLists.txt       | 2 +-
+ tests/CMakeLists.txt          | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1234567..abcdefg 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,6 +1,6 @@
+-cmake_minimum_required(VERSION 2.8.12)
++cmake_minimum_required(VERSION 3.5)
+ 
+ project(sysrepo)
+ set(SYSREPO_DESC "YANG-based system repository for all-around configuration management.")
+ 
+ # include custom Modules
+diff --git a/CMakeModules/UseCompat.cmake b/CMakeModules/UseCompat.cmake
+index 2345678..bcdefgh 100644
+--- a/CMakeModules/UseCompat.cmake
++++ b/CMakeModules/UseCompat.cmake
+@@ -1,5 +1,5 @@
+-cmake_minimum_required(VERSION 2.8.12)
++cmake_minimum_required(VERSION 3.5)
+ 
+ include(CheckSymbolExists)
+ include(TestBigEndian)
+ 
+diff --git a/CMakeModules/uninstall.cmake b/CMakeModules/uninstall.cmake
+index 3456789..cdefghi 100644
+--- a/CMakeModules/uninstall.cmake
++++ b/CMakeModules/uninstall.cmake
+@@ -1,5 +1,5 @@
+-cmake_minimum_required(VERSION 3.0.2)
++cmake_minimum_required(VERSION 3.5)
+ 
+ set(MANIFEST "${CMAKE_CURRENT_BINARY_DIR}/install_manifest.txt")
+ 
+ if(NOT EXISTS ${MANIFEST})
+diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
+index 4567890..defghij 100644
+--- a/examples/CMakeLists.txt
++++ b/examples/CMakeLists.txt
+@@ -1,6 +1,6 @@
+-cmake_minimum_required(VERSION 2.8.12)
++cmake_minimum_required(VERSION 3.5)
+ 
+ # correct RPATH usage on OS X
+ set(CMAKE_MACOSX_RPATH TRUE)
+ 
+ # list of all the examples
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 5678901..efghijk 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -1,6 +1,6 @@
+-cmake_minimum_required(VERSION 2.8.12)
++cmake_minimum_required(VERSION 3.5)
+ 
+ # correct RPATH usage on OS X
+ set(CMAKE_MACOSX_RPATH TRUE)
+ 
+ # set TESTS_DIR to realpath
+-- 
+2.34.1

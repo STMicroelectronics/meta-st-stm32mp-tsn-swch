@@ -1,3 +1,5 @@
+Upstream-Status: Inappropriate [TTTech-specific]
+
 diff --git a/src/common.h.in b/src/common.h.in
 index c6f1c1d..3fc9ae2 100644
 --- a/src/common.h.in

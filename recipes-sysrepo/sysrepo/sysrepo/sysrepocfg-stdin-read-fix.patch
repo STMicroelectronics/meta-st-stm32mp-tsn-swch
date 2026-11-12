@@ -1,0 +1,15 @@
+Upstream-Status: Inappropriate [TTTech-specific]
+
+diff --git a/src/executables/sysrepocfg.c b/src/executables/sysrepocfg.c
+index bf8704fb..c69f347c 100644
+--- a/src/executables/sysrepocfg.c
++++ b/src/executables/sysrepocfg.c
+@@ -186,7 +186,7 @@ step_read_file(FILE *file, char **mem)
+ 
+     do {
+         if (mem_used == mem_size) {
+-            mem_size >>= 1;
++            mem_size <<= 1;
+             *mem = realloc(*mem, mem_size);
+         }
+ 

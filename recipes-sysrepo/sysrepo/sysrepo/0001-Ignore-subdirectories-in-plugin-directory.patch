@@ -1,0 +1,29 @@
+From 828dc03ffdc474bae0f945b1fc325c494b03ed90 Mon Sep 17 00:00:00 2001
+From: Lauri Kaila <lauri.kaila@tttech.com>
+Date: Thu, 27 Mar 2025 13:34:05 +0200
+Subject: [PATCH] Ignore subdirectories in plugin directory
+
+This helps if debug symbols are installed in .debug subdirectory.
+
+Upstream-Status: Inappropriate [TTTech-specific]
+---
+ src/executables/sysrepo-plugind.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/executables/sysrepo-plugind.c b/src/executables/sysrepo-plugind.c
+index f3b83d36..4d89feb4 100644
+--- a/src/executables/sysrepo-plugind.c
++++ b/src/executables/sysrepo-plugind.c
+@@ -287,7 +287,8 @@ load_plugins(struct srpd_plugin_s **plugins, int *plugin_count)
+     }
+ 
+     while ((ent = readdir(dir))) {
+-        if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, "..")) {
++        if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, "..")
++            || (ent->d_type == DT_DIR)) {
+             continue;
+         }
+ 
+-- 
+2.39.5
+
