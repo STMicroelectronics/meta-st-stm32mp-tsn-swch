@@ -5,7 +5,7 @@ Wants=network.target
 
 [Service]
 PIDFile=/var/run/deptp.pid
-ExecStart=/usr/sbin/deptp -s /etc/deptp/ptp_config.xml
+ExecStart=/usr/sbin/deptp /etc/deptp/ptp_config.xml
 
 
 [Install]

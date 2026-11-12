@@ -8,15 +8,15 @@ SRC_URI = "\
     "
 SRCREV = "${TSN_SRCREV}"
 
-PV = "st-1.6.9-2.5.4-${TTTECH_BINARY_DATE}"
+PV = "st-1.6.10-2.6.0-${TTTECH_BINARY_DATE}"
 
 TTTECH_DIR = "de-ptp/aarch64"
-S = "${WORKDIR}/git/${TTTECH_DIR}"
+S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
 # ------------------------------------------------------------------
 TTTECH_BINARY_ARCH = "aarch64"
-TTTECH_BINARY_DATE = "2026-06-30"
+TTTECH_BINARY_DATE = "2026-09-29"
 TTTECH_BINARY_TARBALL = "TTTECH-de-ptp-${TTTECH_BINARY_ARCH}-${TTTECH_BINARY_DATE}"
-TTTECH_BINARIES_PATH = "${WORKDIR}/git/de-ptp"
+TTTECH_BINARIES_PATH = "${UNPACKDIR}/${BP}/de-ptp"
 inherit binaries-unpack
 
 # ------------------------------------------------------------------
@@ -34,8 +34,8 @@ SYSTEMD_AUTO_ENABLE:${PN} = "disable"
 
 do_install:append() {
     if ${@bb.utils.contains('DISTRO_FEATURES','systemd','true','false',d)}; then
-        install -d ${D}${systemd_unitdir}/system
-        install -m 644 ${TSN_BASE_LAYER}/recipes-de-ptp/de-ptp/files/deptp.service ${D}${systemd_unitdir}/system/
+	install -d ${D}${systemd_unitdir}/system
+	install -m 644 ${TSN_BASE_LAYER}/recipes-de-ptp/de-ptp/files/deptp.service ${D}${systemd_unitdir}/system/
     fi
     install -m 644 ${TSN_BASE_LAYER}/recipes-de-ptp/de-ptp/files/ptp_config.xml ${D}${sysconfdir}/deptp/
     rm ${D}/TTTECH_license.txt
