@@ -7,7 +7,7 @@
 / {
     compatible = "st,stm32mp257";
     fragment@0 {
-                target = <&eth1>;
+                target = <&ethernet1>;
                 __overlay__ {
                     status = "okay";
                     pinctrl-0 = <&eth1_mdio_pins_a>;
@@ -22,7 +22,7 @@
                         full-duplex;
                     };
 
-                    mdio1 {
+                    mdio {
                         #address-cells = <1>;
                         #size-cells = <0>;
                         compatible = "snps,dwmac-mdio";
