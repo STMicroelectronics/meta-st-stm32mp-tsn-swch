@@ -1,0 +1,26 @@
+From 9c4af47965d284b2de26407bcd80473aba4ee4c9 Mon Sep 17 00:00:00 2001
+From: Yocto Builder <yocto@example.com>
+Date: Sun, 25 May 2026 12:00:00 +0000
+Subject: [PATCH] Update cmake_minimum_required to 3.5 for CMake 4.x compatibility
+
+CMake 4.x removed compatibility with CMake < 3.5.
+Update cmake_minimum_required to 3.5 to fix build with CMake 4.3.1.
+
+Upstream-Status: Inappropriate [Wrynose-specific]
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1234567..abcdefg 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.3.0)
++cmake_minimum_required(VERSION 3.5.0)
+ cmake_policy(SET CMP0048 NEW)
+ 
+ # Specify search path for CMake modules to be loaded by include() 
+-- 
+2.34.1

@@ -7,9 +7,10 @@ DEPENDS = "zlib openssl libgcrypt"
 LICENSE = "LGPL-2.1-only"
 LIC_FILES_CHKSUM = "file://COPYING;md5=dabb4958b830e5df11d2b0ed8ea255a0"
 
-SRC_URI = "git://git.libssh.org/projects/libssh.git;protocol=https;branch=stable-0.9"
-SRCREV = "0cceefd49d4d397eb21bd36e314ac87739da51ff"
-S = "${WORKDIR}/git"
+SRCREV = "9c4af47965d284b2de26407bcd80473aba4ee4c9"
+SRC_URI = "git://git.libssh.org/projects/libssh.git;protocol=https;branch=stable-0.9 \
+           file://0001-Update-cmake_minimum_required-to-3.5-for-CMake-4.x.patch \
+           "
 
 EXTRA_OECMAKE = " \
     -DWITH_GCRYPT=0 \
@@ -19,7 +20,7 @@ EXTRA_OECMAKE = " \
     -DLIB_SUFFIX=${@d.getVar('baselib').replace('lib', '')} \
     "
 
-PACKAGECONFIG ??=""
+PACKAGECONFIG ??= ""
 PACKAGECONFIG[gssapi] = "-DWITH_GSSAPI=1, -DWITH_GSSAPI=0, krb5, "
 
 inherit cmake
