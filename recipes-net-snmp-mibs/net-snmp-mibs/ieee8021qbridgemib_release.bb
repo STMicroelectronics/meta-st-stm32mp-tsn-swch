@@ -9,16 +9,16 @@ SRC_URI = "\
     "
 SRCREV = "${TSN_SRCREV}"
 
-PV = "st-1.6.9"
+PV = "st-1.6.10"
 
 TTTECH_DIR = "tsn_sw_base.net-snmp-mibs/${TTTECH_BINARY_ARCH}"
-S = "${WORKDIR}/git/${TTTECH_DIR}"
+S = "${UNPACKDIR}/${BP}/${TTTECH_DIR}"
 
 # ------------------------------------------------------------------
 TTTECH_BINARY_ARCH = "aarch64"
-TTTECH_BINARY_DATE = "2026-06-30"
+TTTECH_BINARY_DATE = "2026-09-29"
 TTTECH_BINARY_TARBALL = "TTTECH-snmp-mibs-${TTTECH_BINARY_ARCH}-${TTTECH_BINARY_DATE}"
-TTTECH_BINARIES_PATH = "${WORKDIR}/git/tsn_sw_base.net-snmp-mibs"
+TTTECH_BINARIES_PATH = "${UNPACKDIR}/${BP}/tsn_sw_base.net-snmp-mibs"
 inherit binaries-unpack
 
 
